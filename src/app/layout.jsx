@@ -1,10 +1,21 @@
-// app/layout.jsx
-import { Inter } from 'next/font/google';
+import { Orbitron, Racing_Sans_One, Oxanium } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({ 
+const orbitron = Orbitron({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['400', '600', '700', '900'],
+  variable: '--font-orbitron'
+});
+
+const racingSans = Racing_Sans_One({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-racing'
+});
+
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  weight: ["400", "700"], // choose weights you need
 });
 
 export const metadata = {
@@ -17,7 +28,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${orbitron.variable} ${racingSans.variable} ${oxanium.className}`} suppressHydrationWarning>
       <body className="font-sans">
         {children}
       </body>

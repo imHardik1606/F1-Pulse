@@ -9,6 +9,28 @@
   --color-primary: #dc2626;
 }
 
+@layer base {
+  :root {
+    --font-orbitron: 'Orbitron', sans-serif;
+    --font-racing: 'Racing Sans One', sans-serif;
+    --font-oxanium: 'Oxanium', sans-serif;
+  }
+}
+
+/* Reusable classes */
+.font-oribitron {
+  font-family: var(--font-orbitron);
+}
+
+.font-racing {
+  font-family: var(--font-racing);
+}
+
+.font-oxanium {
+  font-family: var(--font-oxanium);
+}
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
