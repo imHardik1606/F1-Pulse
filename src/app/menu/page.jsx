@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import React from 'react';
 
 export default function MenuPage() {
@@ -69,6 +70,7 @@ export default function MenuPage() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {menuItems.map((item, index) => (
+            <Link href={`/${item.title.toLowerCase()}`} key={item.id} className="no-underline">
             <div
               key={item.id}
               className="group relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1 animate-slide-in"
@@ -125,6 +127,7 @@ export default function MenuPage() {
               {/* Shine effect on hover */}
               <div className="absolute top-0 -left-full w-1/2 h-full bg-linear-to-r from-transparent via-white/10 to-transparent group-hover:left-full transition-all duration-1000"></div>
             </div>
+            </Link>
           ))}
         </div>
       </div>
