@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { f1Api } from "../services/f1Api";
 import { Racing_Sans_One, Orbitron, Oxanium } from "next/font/google";
+import Link from "next/link";
 
 const racingSans = Racing_Sans_One({
   weight: "400",
@@ -162,7 +163,7 @@ export default function LandingPage() {
 
     const colorMap = {
       "red bull": "from-blue-900 to-blue-700",
-      ferrari: "from-red-600 to-red-800",
+      ferrari: "from-primary to-red-800",
       mclaren: "from-orange-500 to-orange-700",
       mercedes: "from-cyan-500 to-blue-600",
       "aston martin": "from-green-600 to-emerald-500",
@@ -170,7 +171,7 @@ export default function LandingPage() {
       williams: "from-blue-900 to-white",
       haas: "from-gray-500 to-white",
       rb: "from-blue-900 to-white",
-      sauber: "from-red-600 to-white",
+      sauber: "from-primary to-white",
       default: "from-gray-600 to-gray-400",
     };
 
@@ -354,7 +355,7 @@ export default function LandingPage() {
                 Next Race
               </h3>
             </motion.div>
-            <h4 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-red-600 to-yellow-500 bg-clip-text text-transparent mb-2">
+            <h4 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-primary to-yellow-500 bg-clip-text text-transparent mb-2">
               {nextRace ? nextRace.name : "Singapore Grand Prix"}
             </h4>
             <p className="text-gray-400 mb-4">
@@ -378,7 +379,7 @@ export default function LandingPage() {
                   };
 
                   const sessionColors = {
-                    race: "from-red-600 to-red-400",
+                    race: "from-primary to-red-400",
                     qualy: "from-blue-600 to-blue-400",
                     fp1: "from-purple-600 to-purple-400",
                     fp2: "from-green-600 to-green-400",
@@ -652,9 +653,9 @@ export default function LandingPage() {
                       </div>
                     )}
                     {item.championships > 0 && (
-                      <div className="flex items-center gap-1">
-                        <TrophyIcon className="w-3 h-3 text-yellow-500" />
-                        <span className="text-xs text-yellow-500">
+                      <div className={`flex items-center gap-1 bg-yellow-200 p-2 rounded-md`}>
+                        <TrophyIcon className="w-3 h-3 text-black" />
+                        <span className={`text-xs text-black ${oxanium.className}`}>
                           {item.championships} titles
                         </span>
                       </div>
@@ -781,7 +782,7 @@ export default function LandingPage() {
               transition={{ duration: 0.5 }}
             >
               <motion.div
-                className="w-8 h-8 bg-linear-to-r from-red-600 to-red-800 rounded-lg flex items-center justify-center"
+                className="w-8 h-8 bg-linear-to-r from-primary to-red-800 rounded-lg flex items-center justify-center"
                 animate={{
                   rotate: [0, 360],
                 }}
@@ -793,7 +794,7 @@ export default function LandingPage() {
               >
                 <span className="font-bold text-white text-sm">F1</span>
               </motion.div>
-              <span className="text-xl font-bold bg-linear-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-linear-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                 PULSE
               </span>
             </motion.div>
@@ -850,7 +851,7 @@ export default function LandingPage() {
               >
                 <span className="block text-white">F1 STATS</span>
                 <motion.span
-                  className="block bg-linear-to-r from-red-600 via-yellow-500 to-blue-600 bg-clip-text text-transparent"
+                  className="block bg-linear-to-r from-primary via-yellow-500 to-blue-600 bg-clip-text text-transparent"
                   animate={{
                     backgroundPosition: ["0%", "100%"],
                   }}
@@ -880,6 +881,29 @@ export default function LandingPage() {
             {/* Next Race Countdown */}
             {renderNextRaceSection()}
 
+            <div className={`flex justify-center m-6 ${racingSans.className}`}>
+              <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary/50 rounded-md border border-red-500/50 text-white font-medium hover:bg-primary/40 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                <Link href="/menu" className="inline-flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M4 4h4v4H4zM12 4h4v4h-4zM4 12h4v4H4zM12 12h4v4h-4z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M20 4v16M4 20h16"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                  Explore more stats <p className="text-2xl">&gt;</p>
+                </Link>
+              </button>
+            </div>
             {/* Championship Standings */}
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -912,7 +936,7 @@ export default function LandingPage() {
                       {" "}
                       {/* Removed w-64 */}
                       <motion.div
-                        className="absolute top-1 bottom-1 w-1/2 bg-red-600/30 rounded-md border border-red-500/50"
+                        className="absolute top-1 bottom-1 w-1/2 bg-primary/30 rounded-md border border-red-500/50"
                         animate={
                           activeStanding === "drivers"
                             ? { x: 0 }
@@ -963,7 +987,7 @@ export default function LandingPage() {
               >
                 <button
                   onClick={fetchAllData}
-                  className="text-red-500 hover:text-red-400 font-semibold flex items-center justify-center mx-auto space-x-2 backdrop-blur-sm px-6 py-3 rounded-lg hover:bg-red-600/10 transition-all duration-300 border border-red-500/30"
+                  className="text-red-500 hover:text-red-400 font-semibold flex items-center justify-center mx-auto space-x-2 backdrop-blur-sm px-6 py-3 rounded-lg hover:bg-primary/10 transition-all duration-300 border border-red-500/30"
                 >
                   <span>Refresh Data</span>
                   <motion.span
@@ -1043,7 +1067,7 @@ export default function LandingPage() {
                 whileHover={{ scale: 1.05 }}
               >
                 <motion.div
-                  className="w-8 h-8 bg-linear-to-r from-red-600 to-red-800 rounded-lg flex items-center justify-center backdrop-blur-sm"
+                  className="w-8 h-8 bg-linear-to-r from-primary to-red-800 rounded-lg flex items-center justify-center backdrop-blur-sm"
                   animate={{
                     rotate: [0, 360],
                   }}
@@ -1055,7 +1079,7 @@ export default function LandingPage() {
                 >
                   <span className="font-bold text-white text-sm">F1</span>
                 </motion.div>
-                <span className="text-xl font-bold bg-linear-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold bg-linear-to-r from-primary to-blue-600 bg-clip-text text-transparent">
                   PULSE
                 </span>
               </motion.div>
