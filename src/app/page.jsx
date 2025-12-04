@@ -15,8 +15,8 @@ import { f1Api } from "../services/f1Api";
 import { Racing_Sans_One, Orbitron, Oxanium } from "next/font/google";
 
 const racingSans = Racing_Sans_One({
-  weight: '400',
-  subsets: ['latin'],
+  weight: "400",
+  subsets: ["latin"],
 });
 
 const orbitron = Orbitron({
@@ -227,15 +227,6 @@ export default function LandingPage() {
 
     return () => clearInterval(timer);
   };
-
-  // F1 Logo SVG for background
-  const f1LogoSVG = `url("data:image/svg+xml,%3Csvg width='200' height='120' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 120'%3E%3Cpath d='M20,60 Q50,20 80,60 T140,60' stroke='%23${
-    darkMode ? "ffffff" : "000000"
-  }' stroke-width='3' fill='none' opacity='0.05'/%3E%3Cpath d='M40,60 Q70,20 100,60 T160,60' stroke='%23${
-    darkMode ? "ffffff" : "000000"
-  }' stroke-width='3' fill='none' opacity='0.05'/%3E%3Ctext x='100' y='75' text-anchor='middle' font-family='Arial, sans-serif' font-size='20' fill='%23${
-    darkMode ? "ffffff" : "000000"
-  }' opacity='0.05'%3EF1%3C/text%3E%3C/svg%3E")`;
 
   // Animation variants
   const containerVariants = {
@@ -622,7 +613,9 @@ export default function LandingPage() {
                 </span>
               </motion.div>
               <div>
-                <h4 className={`text-base md:text-xl font-semibold text-white flex items-center gap-2 ${orbitron.className}`}>
+                <h4
+                  className={`text-base md:text-xl font-semibold text-white flex items-center gap-2 ${orbitron.className}`}
+                >
                   {item.name}
                   {activeStanding === "drivers" && item.shortName && (
                     <span className="text-xs bg-gray-700/50 px-2 py-0.5 rounded text-gray-300">
@@ -632,11 +625,15 @@ export default function LandingPage() {
                 </h4>
                 {activeStanding === "drivers" && item.team && (
                   <div className="flex items-center gap-2">
-                    <p className={`text-gray-400 text-sm font-medium ${racingSans.className}`}>
+                    <p
+                      className={`text-gray-400 text-sm font-medium ${racingSans.className}`}
+                    >
                       {item.team}
                     </p>
                     {item.nationality && (
-                      <span className={`text-xs text-gray-500 ${oxanium.className}`}>
+                      <span
+                        className={`text-xs text-gray-500 ${oxanium.className}`}
+                      >
                         • {item.nationality}
                       </span>
                     )}
@@ -647,7 +644,9 @@ export default function LandingPage() {
                     {item.country && (
                       <div className="flex items-center gap-1">
                         <Flag className="w-3 h-3 text-gray-500" />
-                        <span className={`text-md text-gray-400 ${racingSans.className}`}>
+                        <span
+                          className={`text-md text-gray-400 ${racingSans.className}`}
+                        >
                           {item.country}
                         </span>
                       </div>
@@ -674,11 +673,17 @@ export default function LandingPage() {
                 {item.points}
               </motion.div>
               <div className="flex items-center justify-end gap-2">
-                <div className={`text-gray-400 text-xs md:text-sm ${racingSans.className}`}>PTS</div>
+                <div
+                  className={`text-gray-400 text-xs md:text-sm ${racingSans.className}`}
+                >
+                  PTS
+                </div>
                 {item.wins > 0 && (
                   <div className="flex items-center gap-1">
                     <Trophy className="w-3 h-3 text-yellow-500" />
-                    <span className={`text-xs text-yellow-500 ${oxanium.className}`}>
+                    <span
+                      className={`text-xs text-yellow-500 ${oxanium.className}`}
+                    >
                       {item.wins}W
                     </span>
                   </div>
@@ -737,12 +742,8 @@ export default function LandingPage() {
 
         {/* Animated F1 Logo Grid */}
         <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: f1LogoSVG,
-            backgroundSize: "400px",
-            backgroundPosition: "center",
-          }}
+          className="absolute inset-0 opacity-5 bg-[url('/assets/f1-bg.jpeg')] bg-center bg-no-repeat"
+          style={{ backgroundSize: "400px" }}
         />
       </div>
 
@@ -937,9 +938,7 @@ export default function LandingPage() {
                         disabled={loading.constructors}
                       >
                         <Award className="w-6 h-6 shrink-0 mr-2" />
-                        <span className="font-medium">
-                          Constructors
-                        </span>
+                        <span className="font-medium">Constructors</span>
                       </button>
                     </div>
                   </div>
@@ -1064,7 +1063,8 @@ export default function LandingPage() {
                 © {currentYear} F1 Pulse. Not affiliated with Formula 1.
               </p>
               <p>
-                Made with <span className="text-red-500">♥</span> by F1 Enthusiasts - Hardik Gayner
+                Made with <span className="text-red-500">♥</span> by F1
+                Enthusiasts - Hardik Gayner
               </p>
             </div>
 
