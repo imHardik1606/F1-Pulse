@@ -373,7 +373,7 @@ const DriversComponent = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-gray-400 text-lg"
+            className="text-gray-400 text-lg font-oxanium"
           >
             {drivers.length} elite drivers competing for glory
           </motion.p>
@@ -385,7 +385,7 @@ const DriversComponent = () => {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10"
+        className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10 font-oxanium"
       >
         {drivers.map((driver, index) => {
           const driverData = getDriverData(driver);
