@@ -248,7 +248,7 @@ export const f1Api = {
   },
 
   // Fetch driver championship for a specific year
-  async getDriverChampionship(year) {
+  async getDriverChampionshipByYear(year) {
     try {
       const response = await fetch(`${API_BASE_URL}/${year}/drivers-championship`);
       if (!response.ok) {
@@ -267,7 +267,7 @@ export const f1Api = {
   },
 
   // Fetch constructor championship for a specific year
-  async getConstructorChampionship(year) {
+  async getConstructorChampionshipByYear(year) {
     try {
       const response = await fetch(`${API_BASE_URL}/${year}/constructors-championship`);
       if (!response.ok) {

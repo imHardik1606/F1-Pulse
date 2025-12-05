@@ -115,8 +115,8 @@ const F1SeasonInfo = () => {
 
     try {
       const [driverData, constructorData] = await Promise.allSettled([
-        f1Api.getDriverChampionship(season.year),
-        f1Api.getConstructorChampionship(season.year)
+        f1Api.getDriverChampionshipByYear(season.year),
+        f1Api.getConstructorChampionshipByYear(season.year)
       ]);
 
       // Handle driver championship data
