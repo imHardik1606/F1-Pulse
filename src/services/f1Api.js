@@ -284,4 +284,18 @@ export const f1Api = {
       return { constructor_championship: [] };
     }
   },
+
+  async getCurrentSeason() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/current`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch current season: ${response.status}`);
+      }
+      const data = await response.json();
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching seasons:', error);
+      throw error;
+    }
+  },  
 };
