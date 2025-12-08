@@ -120,7 +120,7 @@ export default function LandingPage() {
           name: race.raceName,
           circuit: race.circuit.circuitName,
           date: race.schedule.race.date + "T" + race.schedule.race.time,
-          schedule: race.schedule, // Add this line
+          schedule: race.schedule,
           round: race.round,
           season: nextRaceData.season,
         });
@@ -129,22 +129,25 @@ export default function LandingPage() {
         );
       } else {
         // Fallback with schedule data
-        const currentYear = new Date().getFullYear();
-        setNextRace({
-          name: "Singapore Grand Prix",
-          circuit: "Marina Bay Street Circuit",
-          date: `${currentYear}-09-22T12:00:00Z`,
-          schedule: {
-            race: { date: `${currentYear}-09-22`, time: "12:00:00Z" },
-            qualy: { date: `${currentYear}-09-21`, time: "14:00:00Z" },
-            fp1: { date: `${currentYear}-09-20`, time: "09:30:00Z" },
-            fp2: { date: `${currentYear}-09-20`, time: "13:00:00Z" },
-            fp3: { date: `${currentYear}-09-21`, time: "10:30:00Z" },
-          },
-        });
-        startRaceCountdown(`${currentYear}-09-22T12:00:00Z`);
+        // const currentYear = new Date().getFullYear();
+        // setNextRace({
+        //   name: "Singapore Grand Prix",
+        //   circuit: "Marina Bay Street Circuit",
+        //   date: `${currentYear}-09-22T12:00:00Z`,
+        //   schedule: {
+        //     race: { date: `${currentYear}-09-22`, time: "12:00:00Z" },
+        //     qualy: { date: `${currentYear}-09-21`, time: "14:00:00Z" },
+        //     fp1: { date: `${currentYear}-09-20`, time: "09:30:00Z" },
+        //     fp2: { date: `${currentYear}-09-20`, time: "13:00:00Z" },
+        //     fp3: { date: `${currentYear}-09-21`, time: "10:30:00Z" },
+        //   },
+        // });
+        // startRaceCountdown(`${currentYear}-09-22T12:00:00Z`);
 
-        setError("Failed to load data. Please try again later.");
+        // setError("Failed to load data. Please try again later.");
+        // No more races this season
+        setNextRace(null);
+        setNextRaceTime(null);
       }
     } finally {
       setLoading({
@@ -294,245 +297,226 @@ export default function LandingPage() {
 
   // Update the Next Race section to use API data
   const renderNextRaceSection = () => {
-    if (loading.race) {
-      return (
-        <motion.div
-          className={`bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-8 mb-12`}
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <div className="animate-pulse">
-            <div className="h-6 bg-gray-700 rounded w-1/4 mb-4"></div>
-            <div className="h-8 bg-gray-700 rounded w-1/2 mb-6"></div>
-            <div className="flex space-x-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex-1">
-                  <div className="h-16 bg-gray-800 rounded-xl"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      );
-    }
-
-    if (error && !nextRace) {
-      return (
-        <motion.div
-          className="bg-gray-900/30 backdrop-blur-xl border border-red-500/30 rounded-2xl p-8 mb-12"
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <div className="text-center">
-            <div className="text-red-500 mb-2">Failed to load race data</div>
-            <button
-              onClick={fetchAllData}
-              className="text-red-500 hover:text-red-400 font-medium px-4 py-2 rounded-lg hover:bg-red-500/10 transition-colors"
-            >
-              Retry
-            </button>
-          </div>
-        </motion.div>
-      );
-    }
-
+  if (loading.race) {
     return (
       <motion.div
-        className={`bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-6 md:p-8 mb-12 md:mb-16 shadow-2xl ${racingSans.className}`}
+        className={`bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-8 mb-12`}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+      >
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-700 rounded w-1/4 mb-4"></div>
+          <div className="h-8 bg-gray-700 rounded w-1/2 mb-6"></div>
+          <div className="flex space-x-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex-1">
+                <div className="h-16 bg-gray-800 rounded-xl"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Handle no races case
+  if (!nextRace) {
+    return (
+      <motion.div
+        className="bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-6 md:p-8 mb-12 md:mb-16 shadow-2xl"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.3, type: "spring", stiffness: 100, damping: 15 }}
       >
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <div className="mb-6 md:mb-0 md:mr-8">
-            <motion.div className="flex items-center space-x-2 mb-2">
-              <motion.div
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              >
-                <Trophy className="w-7 h-7 text-yellow-500" />
-              </motion.div>
-              <h3 className="text-xl md:text-2xl font-semibold text-white">
-                Next Race
-              </h3>
-            </motion.div>
-            <h4 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-primary to-yellow-500 bg-clip-text text-transparent mb-2">
-              {nextRace ? nextRace.name : "Singapore Grand Prix"}
-            </h4>
-            <p className="text-gray-400 mb-4">
-              {nextRace ? nextRace.circuit : "Marina Bay Street Circuit"}
-            </p>
-
-            {/* Session Dates Section */}
-            {/* {nextRace && nextRace.schedule && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
-                {Object.entries(nextRace.schedule).map(([session, details]) => {
-                  if (!details?.date) return null;
-
-                  const sessionLabels = {
-                    race: "Race",
-                    qualy: "Qualifying",
-                    fp1: "FP1",
-                    fp2: "FP2",
-                    fp3: "FP3",
-                    sprintQualy: "Sprint Qualifying",
-                    sprintRace: "Sprint Race",
-                  };
-
-                  const sessionColors = {
-                    race: "from-primary to-red-400",
-                    qualy: "from-blue-600 to-blue-400",
-                    fp1: "from-purple-600 to-purple-400",
-                    fp2: "from-green-600 to-green-400",
-                    fp3: "from-yellow-600 to-yellow-400",
-                    sprintQualy: "from-pink-600 to-pink-400",
-                    sprintRace: "from-orange-600 to-orange-400",
-                  };
-
-                  const formatDateTime = (dateStr, timeStr) => {
-                    const date = new Date(
-                      `${dateStr}T${timeStr || "12:00:00Z"}`
-                    );
-                    return date.toLocaleDateString("en-US", {
-                      weekday: "short",
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      timeZoneName: "short",
-                    });
-                  };
-
-                  return (
-                    <motion.div
-                      key={session}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay:
-                          0.1 * Object.keys(nextRace.schedule).indexOf(session),
-                      }}
-                      className="bg-gray-800/30 rounded-lg p-3 border border-gray-700/50"
-                    >
-                      <div className="flex items-center space-x-2 mb-1">
-                        <div
-                          className={`w-2 h-2 rounded-full bg-linear-to-r ${
-                            sessionColors[session] ||
-                            "from-gray-600 to-gray-400"
-                          }`}
-                        />
-                        <span className="text-sm font-medium text-gray-300">
-                          {sessionLabels[session] || session}
-                        </span>
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        {formatDateTime(details.date, details.time)}
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            )} */}
-            {nextRace && nextRace.schedule && (
-              <div className="mt-4 pt-4 border-t border-gray-800/50">
-                <h5 className="text-sm font-medium text-gray-400 mb-3">
-                  Session Schedule
-                </h5>
-                <div className="space-y-2">
-                  {Object.entries(nextRace.schedule)
-                    .filter(([_, details]) => details?.date)
-                    .sort(
-                      (a, b) =>
-                        new Date(`${a[1].date}T${a[1].time}`) -
-                        new Date(`${b[1].date}T${b[1].time}`)
-                    )
-                    .map(([session, details], index) => {
-                      const date = new Date(
-                        `${details.date}T${details.time || "12:00:00Z"}`
-                      );
-                      const isRace = session === "race";
-
-                      return (
-                        <motion.div
-                          key={session}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                          className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-800/30 transition-colors"
-                        >
-                          <div className="flex items-center space-x-3">
-                            <div
-                              className={`w-3 h-3 rounded-full ${
-                                isRace ? "bg-red-500" : "bg-gray-600"
-                              }`}
-                            />
-                            <span
-                              className={`text-sm ${
-                                isRace
-                                  ? "text-white font-medium"
-                                  : "text-gray-300"
-                              }`}
-                            >
-                              {session === "race"
-                                ? "Race"
-                                : session === "qualy"
-                                ? "Qualifying"
-                                : session.toUpperCase()}
-                            </span>
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            {date.toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {nextRaceTime && (
-            <div className="flex space-x-4 md:space-x-6">
-              {[
-                { value: nextRaceTime.days, label: "DAYS" },
-                { value: nextRaceTime.hours, label: "HOURS" },
-                { value: nextRaceTime.minutes, label: "MINUTES" },
-                { value: nextRaceTime.seconds, label: "SECONDS" },
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  custom={index}
-                  initial="hidden"
-                  animate="visible"
-                  variants={countVariants}
-                  className="text-center"
-                >
-                  <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-3 md:p-4 min-w-16 md:min-w-20">
-                    <motion.div
-                      className="text-2xl md:text-3xl font-bold text-white"
-                      key={`${item.label}-${item.value}`}
-                      initial={{ y: -20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 200 }}
-                    >
-                      {item.value.toString().padStart(2, "0")}
-                    </motion.div>
-                    <div className="text-xs md:text-sm text-gray-400 mt-1">
-                      {item.label}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
+        <div className="flex flex-col items-center justify-center text-center py-8 md:py-12">
+          <motion.div
+            className="mb-6"
+            initial={{ rotate: -180, scale: 0 }}
+            animate={{ rotate: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+          >
+            <div className="w-20 h-20 bg-linear-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border border-gray-700/50">
+              <Trophy className="w-10 h-10 text-gray-500" />
             </div>
-          )}
+          </motion.div>
+          
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
+          >
+            <h3 className={`text-2xl md:text-3xl font-bold text-white ${racingSans.className}`}>
+              Season Complete! 🏁
+            </h3>
+            
+            <div className="text-gray-400 max-w-md mx-auto space-y-3">
+              <p className="text-lg">
+                No more races left this season
+              </p>
+              <p className="text-sm md:text-base">
+                The {currentYear} Formula 1 season has concluded. 
+                Stay tuned for the next season's schedule!
+              </p>
+            </div>
+            
+            <motion.div
+              className="flex items-center justify-center space-x-2 mt-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="w-8 h-8 rounded-full bg-linear-to-r from-gray-700 to-gray-600 border-2 border-gray-900"
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-500">
+                See you in {currentYear + 1}!
+              </span>
+            </motion.div>
+          </motion.div>
         </div>
       </motion.div>
     );
-  };
+  }
+
+  // Original next race display code (when there is a next race)
+  return (
+    <motion.div
+      className={`bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-6 md:p-8 mb-12 md:mb-16 shadow-2xl ${racingSans.className}`}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ delay: 0.3, type: "spring", stiffness: 100, damping: 15 }}
+    >
+      <div className="flex flex-col md:flex-row items-center justify-between">
+        <div className="mb-6 md:mb-0 md:mr-8">
+          <motion.div className="flex items-center space-x-2 mb-2">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <Trophy className="w-7 h-7 text-yellow-500" />
+            </motion.div>
+            <h3 className="text-xl md:text-2xl font-semibold text-white">
+              Next Race
+            </h3>
+          </motion.div>
+          <h4 className="text-2xl md:text-3xl font-bold bg-linear-to-r from-primary to-yellow-500 bg-clip-text text-transparent mb-2">
+            {nextRace.name}
+          </h4>
+          <p className="text-gray-400 mb-4">
+            {nextRace.circuit}
+          </p>
+
+          {/* Session Dates Section */}
+          {nextRace.schedule && (
+            <div className="mt-4 pt-4 border-t border-gray-800/50">
+              <h5 className="text-sm font-medium text-gray-400 mb-3">
+                Session Schedule
+              </h5>
+              <div className="space-y-2">
+                {Object.entries(nextRace.schedule)
+                  .filter(([_, details]) => details?.date)
+                  .sort(
+                    (a, b) =>
+                      new Date(`${a[1].date}T${a[1].time}`) -
+                      new Date(`${b[1].date}T${b[1].time}`)
+                  )
+                  .map(([session, details], index) => {
+                    const date = new Date(
+                      `${details.date}T${details.time || "12:00:00Z"}`
+                    );
+                    const isRace = session === "race";
+
+                    return (
+                      <motion.div
+                        key={session}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-800/30 transition-colors"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`w-3 h-3 rounded-full ${
+                              isRace ? "bg-red-500" : "bg-gray-600"
+                            }`}
+                          />
+                          <span
+                            className={`text-sm ${
+                              isRace
+                                ? "text-white font-medium"
+                                : "text-gray-300"
+                            }`}
+                          >
+                            {session === "race"
+                              ? "Race"
+                              : session === "qualy"
+                              ? "Qualifying"
+                              : session.toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          {date.toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {nextRaceTime && (
+          <div className="flex space-x-4 md:space-x-6">
+            {[
+              { value: nextRaceTime.days, label: "DAYS" },
+              { value: nextRaceTime.hours, label: "HOURS" },
+              { value: nextRaceTime.minutes, label: "MINUTES" },
+              { value: nextRaceTime.seconds, label: "SECONDS" },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                custom={index}
+                initial="hidden"
+                animate="visible"
+                variants={countVariants}
+                className="text-center"
+              >
+                <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-3 md:p-4 min-w-16 md:min-w-20">
+                  <motion.div
+                    className="text-2xl md:text-3xl font-bold text-white"
+                    key={`${item.label}-${item.value}`}
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                  >
+                    {item.value.toString().padStart(2, "0")}
+                  </motion.div>
+                  <div className="text-xs md:text-sm text-gray-400 mt-1">
+                    {item.label}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+};
 
   // Update the renderStandings function to handle both drivers and constructors:
   const renderStandings = () => {

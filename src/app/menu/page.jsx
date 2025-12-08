@@ -63,7 +63,7 @@ export default function MenuPage() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4 font-racing" style={{ color: 'rgb(220, 38, 38)' }}>
           Formula 1 API
         </h1>
-        <p className="text-gray-300 text-lg font-oribitron">Explore all F1 data endpoints</p>
+        <p className="text-gray-300 text-lg font-orbitron">Explore all F1 data endpoints</p>
       </header>
 
       {/* Menu Grid */}
@@ -101,7 +101,7 @@ export default function MenuPage() {
                     <span className="text-4xl">{item.icon}</span>
                   </div>
                   
-                  <h2 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-primary transition-colors duration-300 font-oribitron">
+                  <h2 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-primary transition-colors duration-300 font-orbitron">
                     {item.title}
                   </h2>
                 </div>

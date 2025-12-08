@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { f1Api } from '../../../services/f1Api';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const F1SeasonInfo = () => {
+export default function Seasons() {
   const [seasons, setSeasons] = useState([]);
   const [selectedSeason, setSelectedSeason] = useState(null);
   const [driverChampion, setDriverChampion] = useState(null);
@@ -13,6 +13,7 @@ const F1SeasonInfo = () => {
     champions: false
   });
   const [error, setError] = useState(null);
+  const [showMobilePopup, setShowMobilePopup] = useState(false);
 
   // Animation variants
   const containerVariants = {
@@ -115,6 +116,11 @@ const F1SeasonInfo = () => {
     setDriverChampion(null);
     setConstructorChampion(null);
 
+    // On small screens, show popup when a season is clicked
+    if (window.innerWidth < 768) {
+      setShowMobilePopup(true);
+    }
+
     try {
       const [driverData, constructorData] = await Promise.allSettled([
         f1Api.getDriverChampionshipByYear(season.year),
@@ -193,26 +199,228 @@ const F1SeasonInfo = () => {
     return text.toString();
   };
 
-  // F1 Checkered flag pattern component - Responsive
-  const CheckeredPattern = () => (
-    <div className="absolute inset-0 overflow-hidden opacity-[0.03] md:opacity-5">
-      <div className="absolute inset-0" style={{
-        backgroundImage: `
-          linear-gradient(45deg, #fff 25%, transparent 25%),
-          linear-gradient(-45deg, #fff 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #fff 75%),
-          linear-gradient(-45deg, transparent 75%, #fff 75%)
-        `,
-        backgroundSize: 'clamp(20px, 40px, 60px) clamp(20px, 40px, 60px)',
-        backgroundPosition: '0 0, 0 20px, 20px -20px, -20px 0px'
-      }} />
-    </div>
+  // Mobile Popup Component
+  const MobilePopup = () => (
+    <AnimatePresence>
+      {showMobilePopup && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 z-50 md:hidden"
+            onClick={() => setShowMobilePopup(false)}
+          />
+          
+          {/* Popup Card */}
+          <motion.div
+            initial={{ y: '100%', opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: "spring", damping: 25 }}
+            className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+          >
+            <div className="relative overflow-hidden rounded-t-2xl"
+              style={{
+                background: 'rgba(17, 24, 39, 0.95)',
+                backdropFilter: 'blur(20px)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.15)',
+                borderLeft: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.5)'
+              }}
+            >
+              {/* Drag handle */}
+              <div className="flex justify-center pt-3 pb-2">
+                <div className="w-12 h-1.5 bg-gray-600 rounded-full"></div>
+              </div>
+
+              {/* Close button */}
+              <button
+                onClick={() => setShowMobilePopup(false)}
+                className="absolute top-3 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Popup content */}
+              <div className="px-6 pb-8 pt-2 max-h-[80vh] overflow-y-auto">
+                {/* Season header */}
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-center bg-linear-to-r from-red-500 via-red-600 to-red-500 bg-clip-text text-transparent mb-2">
+                    {selectedSeason?.year}
+                  </h3>
+                  <p className="text-gray-400 text-center text-sm">
+                    {selectedSeason?.championshipName}
+                  </p>
+                </div>
+
+                {/* Render the championship details - same as desktop but compact */}
+                <div className="space-y-6">
+                  {/* Driver Champion */}
+                  <div className="relative overflow-hidden rounded-xl p-4"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-linear-to-r from-red-600 to-red-700 flex items-center justify-center mr-3">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-white">
+                          DRIVER CHAMPION
+                        </h3>
+                      </div>
+                      {driverChampion?.points && (
+                        <span className="px-3 py-1 bg-linear-to-r from-red-600 to-red-800 text-white text-xs font-bold rounded-full">
+                          {safeText(driverChampion.points)} PTS
+                        </span>
+                      )}
+                    </div>
+                    
+                    {driverChampion ? (
+                      <div className="flex items-center space-x-4">
+                        <div className="relative">
+                          <div className="w-16 h-16 rounded-full bg-linear-to-r from-red-600 to-red-800 flex items-center justify-center text-2xl font-bold text-white">
+                            {getInitials(driverChampion.name) + getInitials(driverChampion.surname)}
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-xl font-bold text-white mb-1">
+                            {safeText(driverChampion.name) + " " + safeText(driverChampion.surname)}
+                          </h4>
+                          <div className="space-y-1 mb-3">
+                            <p className="text-gray-300 text-sm flex items-center">
+                              <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span>
+                              Team: <span className="ml-2 font-semibold text-white">{safeText(driverChampion.team)}</span>
+                            </p>
+                            <p className="text-gray-300 text-sm flex items-center">
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
+                              Nationality: <span className="ml-2 font-semibold text-white">{safeText(driverChampion.nationality)}</span>
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <div className="px-2 py-1 bg-gray-800/50 rounded-lg">
+                              <span className="text-gray-400">Wins: </span>
+                              <span className="font-bold text-white ml-1">{safeText(driverChampion.wins)}</span>
+                            </div>
+                            <div className="px-2 py-1 bg-gray-800/50 rounded-lg">
+                              <span className="text-gray-400">Podiums: </span>
+                              <span className="font-bold text-white ml-1">{safeText(driverChampion.podiums)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 text-gray-500 text-sm">
+                        No driver championship data available
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Constructor Champion */}
+                  <div className="relative overflow-hidden rounded-xl p-4"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
+                      backdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-linear-to-r from-blue-600 to-blue-700 flex items-center justify-center mr-3">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-white">
+                          CONSTRUCTOR CHAMPION
+                        </h3>
+                      </div>
+                      {constructorChampion?.points && (
+                        <span className="px-3 py-1 bg-linear-to-r from-blue-600 to-blue-800 text-white text-xs font-bold rounded-full">
+                          {safeText(constructorChampion.points)} PTS
+                        </span>
+                      )}
+                    </div>
+                    
+                    {constructorChampion ? (
+                      <div className="flex items-center space-x-4">
+                        <div className="relative">
+                          <div className="w-16 h-16 rounded-full bg-linear-to-r from-blue-600 to-blue-800 flex items-center justify-center">
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-xl font-bold text-white mb-1">
+                            {safeText(constructorChampion.name)}
+                          </h4>
+                          <div className="space-y-1 mb-3">
+                            <p className="text-gray-300 text-sm flex items-center">
+                              <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
+                              Nationality: <span className="ml-2 font-semibold text-white">{safeText(constructorChampion.nationality)}</span>
+                            </p>
+                          </div>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <div className="px-2 py-1 bg-gray-800/50 rounded-lg">
+                              <span className="text-gray-400">Wins: </span>
+                              <span className="font-bold text-white ml-1">{safeText(constructorChampion.wins)}</span>
+                            </div>
+                            <div className="px-2 py-1 bg-gray-800/50 rounded-lg">
+                              <span className="text-gray-400">Points: </span>
+                              <span className="font-bold text-white ml-1">{safeText(constructorChampion.points)}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 text-gray-500 text-sm">
+                        No constructor championship data available
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Wikipedia Link */}
+                  {selectedSeason?.url && (
+                    <div className="mt-4 pt-4 border-t border-gray-800">
+                      <a
+                        href={selectedSeason.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center px-4 py-3 bg-gray-800/30 rounded-xl border border-gray-700"
+                      >
+                        <span className="text-gray-300 font-medium">
+                          Learn more about {safeText(selectedSeason.year)}
+                        </span>
+                        <svg className="w-5 h-5 ml-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-900 text-white relative overflow-hidden">
       {/* Background pattern */}
-      <CheckeredPattern />
+      {/* <CheckeredPattern /> */}
       
       {/* Animated grid lines - Responsive */}
       <div className="absolute inset-0 hidden sm:block">
@@ -231,12 +439,12 @@ const F1SeasonInfo = () => {
         >
           <div className="flex flex-col sm:flex-row items-center justify-center mb-3 sm:mb-4">
             <div className="hidden sm:block h-px w-8 sm:w-12 bg-linear-to-r from-transparent to-red-500 mr-2 sm:mr-4"></div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-linear-to-r from-red-500 via-red-600 to-red-500 bg-clip-text text-transparent px-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-linear-to-r from-red-500 via-red-600 to-red-500 bg-clip-text text-transparent px-4 font-racing">
               FORMULA 1 CHAMPIONS
             </h1>
             <div className="hidden sm:block h-px w-8 sm:w-12 bg-linear-to-l from-transparent to-red-500 ml-2 sm:ml-4"></div>
           </div>
-          <p className="text-gray-400 text-sm sm:text-base md:text-lg px-4">Explore championship winners through the seasons</p>
+          <p className="text-gray-400 text-sm sm:text-base md:text-lg px-4 font-oxanium">Explore championship winners through the seasons</p>
         </motion.div>
         
         {/* Main Grid - Responsive */}
@@ -263,7 +471,7 @@ const F1SeasonInfo = () => {
                 variants={fadeInUp}
                 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center"
               >
-                <span className="bg-linear-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-red-500 to-orange-500 bg-clip-text text-transparent font-oxanium">
                   SEASON SELECTOR
                 </span>
                 <div className="ml-2 sm:ml-4 h-px flex-1 bg-linear-to-r from-red-500/50 to-transparent"></div>
@@ -355,7 +563,7 @@ const F1SeasonInfo = () => {
                             <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-3">
                               <motion.span
                                 whileHover={{ scale: 1.05 }}
-                                className="text-lg sm:text-xl md:text-2xl font-bold bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent"
+                                className="text-lg sm:text-xl md:text-2xl font-bold bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent font-racing"
                               >
                                 {safeText(season.year)}
                               </motion.span>
@@ -368,7 +576,7 @@ const F1SeasonInfo = () => {
                                 />
                               )}
                             </div>
-                            <p className="text-gray-400 mt-1 sm:mt-2 text-xs sm:text-sm truncate">
+                            <p className="text-gray-400 mt-1 sm:mt-2 text-md sm:text-sm truncate font-racing">
                               {safeText(season.championshipName)}
                             </p>
                           </div>
@@ -395,363 +603,373 @@ const F1SeasonInfo = () => {
           </motion.div>
 
           {/* Championship Details - Responsive Glass Card */}
-          <motion.div
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            whileHover="hover"
-            className="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl"
-            style={{
-              background: 'rgba(17, 24, 39, 0.7)',
-              backdropFilter: 'blur(12px) saturate(180%)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
-            }}
-          >
-            {/* Racing line accent */}
-            <div className="absolute top-0 left-0 w-1 sm:w-2 h-full bg-linear-to-b from-blue-500 via-blue-600 to-transparent"></div>
-            
-            <div className="p-4 sm:p-5 md:p-6">
-              <motion.h2 
-                variants={fadeInUp}
-                className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center"
-              >
-                <span className="bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                  CHAMPIONSHIP DETAILS
-                </span>
-                <div className="ml-2 sm:ml-4 h-px flex-1 bg-linear-to-r from-blue-500/50 to-transparent"></div>
-              </motion.h2>
+          {/* Hide on small screens, show on medium and larger screens */}
+          <div className="hidden md:block">
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              className="relative overflow-hidden rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl"
+              style={{
+                background: 'rgba(17, 24, 39, 0.7)',
+                backdropFilter: 'blur(12px) saturate(180%)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+              }}
+            >
+              {/* Racing line accent */}
+              <div className="absolute top-0 left-0 w-1 sm:w-2 h-full bg-linear-to-b from-blue-500 via-blue-600 to-transparent"></div>
+              
+              <div className="p-4 sm:p-5 md:p-6">
+                <motion.h2 
+                  variants={fadeInUp}
+                  className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center"
+                >
+                  <span className="bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent font-racing">
+                    CHAMPIONSHIP DETAILS
+                  </span>
+                  <div className="ml-2 sm:ml-4 h-px flex-1 bg-linear-to-r from-blue-500/50 to-transparent"></div>
+                </motion.h2>
 
-              <AnimatePresence mode="wait">
-                {loading.champions ? (
-                  <motion.div
-                    key="champions-loading"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="flex flex-col items-center justify-center py-12 sm:py-16"
-                  >
+                <AnimatePresence mode="wait">
+                  {loading.champions ? (
                     <motion.div
-                      animate={{
-                        rotate: 360,
-                        scale: [1, 1.2, 1]
-                      }}
-                      transition={{
-                        rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-                        scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
-                      }}
-                      className="relative mb-4 sm:mb-6"
+                      key="champions-loading"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="flex flex-col items-center justify-center py-12 sm:py-16"
                     >
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 border-3 sm:border-4 border-transparent border-t-red-500 border-r-blue-500 rounded-full"></div>
-                      <div className="absolute inset-0 w-16 h-16 sm:w-20 sm:h-20 border-3 sm:border-4 border-transparent border-b-red-300 border-l-blue-300 rounded-full"></div>
+                      <motion.div
+                        animate={{
+                          rotate: 360,
+                          scale: [1, 1.2, 1]
+                        }}
+                        transition={{
+                          rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+                          scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                        className="relative mb-4 sm:mb-6"
+                      >
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 border-3 sm:border-4 border-transparent border-t-red-500 border-r-blue-500 rounded-full"></div>
+                        <div className="absolute inset-0 w-16 h-16 sm:w-20 sm:h-20 border-3 sm:border-4 border-transparent border-b-red-300 border-l-blue-300 rounded-full"></div>
+                      </motion.div>
+                      <motion.p
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                        className="text-gray-300 text-sm sm:text-base"
+                      >
+                        Loading championship data...
+                      </motion.p>
                     </motion.div>
-                    <motion.p
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      className="text-gray-300 text-sm sm:text-base"
-                    >
-                      Loading championship data...
-                    </motion.p>
-                  </motion.div>
-                ) : error ? (
-                  <motion.div
-                    key="champions-error"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="bg-red-900/20 border border-red-800/50 rounded-xl p-4 sm:p-6"
-                    style={{
-                      background: 'rgba(220, 38, 38, 0.1)',
-                      backdropFilter: 'blur(8px)'
-                    }}
-                  >
-                    <p className="text-red-300 text-sm sm:text-base">{error}</p>
-                  </motion.div>
-                ) : !selectedSeason ? (
-                  <motion.div
-                    key="no-season"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-center py-12 sm:py-16"
-                  >
+                  ) : error ? (
                     <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 text-gray-600"
+                      key="champions-error"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="bg-red-900/20 border border-red-800/50 rounded-xl p-4 sm:p-6"
+                      style={{
+                        background: 'rgba(220, 38, 38, 0.1)',
+                        backdropFilter: 'blur(8px)'
+                      }}
                     >
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
+                      <p className="text-red-300 text-sm sm:text-base">{error}</p>
                     </motion.div>
-                    <motion.p
+                  ) : !selectedSeason ? (
+                    <motion.div
+                      key="no-season"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="text-gray-400 text-base sm:text-lg"
+                      exit={{ opacity: 0 }}
+                      className="text-center py-12 sm:py-16"
                     >
-                      Select a season to view championship details
-                    </motion.p>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="champions"
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="space-y-4 sm:space-y-6"
-                  >
-                    {/* Driver Champion - Responsive */}
-                    <motion.div
-                      variants={cardVariants}
-                      className="relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 group"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
-                        backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                      }}
-                    >
-                      {/* Animated background effect */}
-                      <div className="absolute inset-0 bg-linear-to-r from-red-900/5 via-transparent to-blue-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      
                       <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="relative z-10"
+                        animate={{ y: [0, -5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 text-gray-600"
                       >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-r from-red-600 to-red-700 flex items-center justify-center mr-2 sm:mr-3">
-                              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                              </svg>
-                            </div>
-                            <h3 className="text-lg sm:text-xl font-bold text-white">
-                              DRIVER CHAMPION
-                            </h3>
-                          </div>
-                          {driverChampion?.points && (
-                            <motion.span
-                              whileHover={{ scale: 1.05 }}
-                              className="px-3 py-1 sm:px-4 sm:py-2 bg-linear-to-r from-red-600 to-red-800 text-white text-xs sm:text-sm font-bold rounded-full border border-red-700 shadow-lg w-fit"
-                            >
-                              {safeText(driverChampion.points)} PTS
-                            </motion.span>
-                          )}
-                        </div>
-                        
-                        {driverChampion ? (
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6">
-                            <motion.div
-                              whileHover={{ rotate: 360 }}
-                              transition={{ duration: 0.5 }}
-                              className="relative self-center sm:self-auto"
-                            >
-                              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-linear-to-r from-red-600 to-red-800 flex items-center justify-center text-2xl sm:text-3xl md:text-4xl font-bold text-white shadow-2xl">
-                                {getInitials(driverChampion.name)}
-                              </div>
-                              <div className="absolute inset-0 rounded-full border-3 sm:border-4 border-transparent border-t-red-400 border-r-red-300 animate-spin"></div>
-                            </motion.div>
-                            <div className="flex-1 min-w-0">
-                              <motion.h4
-                                initial={{ x: -10, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.3 }}
-                                className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2 text-center sm:text-left"
-                              >
-                                {safeText(driverChampion.name) + " " + safeText(driverChampion.surname)}
-                              </motion.h4>
-                              <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4">
-                                <motion.p
-                                  initial={{ x: -10, opacity: 0 }}
-                                  animate={{ x: 0, opacity: 1 }}
-                                  transition={{ delay: 0.4 }}
-                                  className="text-gray-300 text-sm sm:text-base flex items-center justify-center sm:justify-start"
-                                >
-                                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full mr-2"></span>
-                                  Team: <span className="ml-1 sm:ml-2 font-semibold text-white truncate">{safeText(driverChampion.team)}</span>
-                                </motion.p>
-                                <motion.p
-                                  initial={{ x: -10, opacity: 0 }}
-                                  animate={{ x: 0, opacity: 1 }}
-                                  transition={{ delay: 0.5 }}
-                                  className="text-gray-300 text-sm sm:text-base flex items-center justify-center sm:justify-start"
-                                >
-                                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mr-2"></span>
-                                  Nationality: <span className="ml-1 sm:ml-2 font-semibold text-white">{safeText(driverChampion.nationality)}</span>
-                                </motion.p>
-                              </div>
-                              <motion.div
-                                initial={{ y: 10, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.6 }}
-                                className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 text-xs sm:text-sm"
-                              >
-                                <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
-                                  <span className="text-gray-400">Wins: </span>
-                                  <span className="font-bold text-white ml-1">{safeText(driverChampion.wins)}</span>
-                                </div>
-                                <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
-                                  <span className="text-gray-400">Podiums: </span>
-                                  <span className="font-bold text-white ml-1">{safeText(driverChampion.podiums)}</span>
-                                </div>
-                                <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
-                                  <span className="text-gray-400">Position: </span>
-                                  <span className="font-bold text-red-500 ml-1">#{safeText(driverChampion.position)}</span>
-                                </div>
-                              </motion.div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
-                            No driver championship data available
-                          </div>
-                        )}
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
                       </motion.div>
-                    </motion.div>
-
-                    {/* Constructor Champion - Responsive */}
-                    <motion.div
-                      variants={cardVariants}
-                      className="relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 group"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
-                        backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                      }}
-                    >
-                      {/* Animated background effect */}
-                      <div className="absolute inset-0 bg-linear-to-r from-blue-900/5 via-transparent to-gray-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      
-                      <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="relative z-10"
+                      <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="text-gray-400 text-base sm:text-lg"
                       >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-r from-blue-600 to-blue-700 flex items-center justify-center mr-2 sm:mr-3">
-                              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                              </svg>
-                            </div>
-                            <h3 className="text-lg sm:text-xl font-bold text-white">
-                              CONSTRUCTOR CHAMPION
-                            </h3>
-                          </div>
-                          {constructorChampion?.points && (
-                            <motion.span
-                              whileHover={{ scale: 1.05 }}
-                              className="px-3 py-1 sm:px-4 sm:py-2 bg-linear-to-r from-blue-600 to-blue-800 text-white text-xs sm:text-sm font-bold rounded-full border border-blue-700 shadow-lg w-fit"
-                            >
-                              {safeText(constructorChampion.points)} PTS
-                            </motion.span>
-                          )}
-                        </div>
+                        Select a season to view championship details
+                      </motion.p>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="champions"
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="space-y-4 sm:space-y-6"
+                    >
+                      {/* Driver Champion - Responsive */}
+                      <motion.div
+                        variants={cardVariants}
+                        className="relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 group"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
+                          backdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)'
+                        }}
+                      >
+                        {/* Animated background effect */}
+                        <div className="absolute inset-0 bg-linear-to-r from-red-900/5 via-transparent to-blue-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
-                        {constructorChampion ? (
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6">
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              className="relative self-center sm:self-auto"
-                            >
-                              <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-linear-to-r from-blue-600 to-blue-800 flex items-center justify-center shadow-2xl">
-                                <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <motion.div
+                          initial={{ scale: 0.95, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.2 }}
+                          className="relative z-10"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-r from-red-600 to-red-700 flex items-center justify-center mr-2 sm:mr-3">
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                              </div>
+                              <h3 className="text-lg sm:text-xl font-bold text-white font-oxanium">
+                                DRIVER CHAMPION
+                              </h3>
+                            </div>
+                            {driverChampion?.points && (
+                              <motion.span
+                                whileHover={{ scale: 1.05 }}
+                                className="px-3 py-1 sm:px-4 sm:py-2 bg-linear-to-r from-red-600 to-red-800 text-white text-xs sm:text-sm font-bold rounded-full border border-red-700 shadow-lg w-fit font-racing"
+                              >
+                                {safeText(driverChampion.points)} PTS
+                              </motion.span>
+                            )}
+                          </div>
+                          
+                          {driverChampion ? (
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6">
+                              <motion.div
+                                whileHover={{ rotate: 360 }}
+                                transition={{ duration: 0.5 }}
+                                className="relative self-center sm:self-auto"
+                              >
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-linear-to-r from-red-600 to-red-800 flex items-center justify-center text-2xl sm:text-3xl md:text-4xl font-bold text-white shadow-2xl font-racing">
+                                  {getInitials(driverChampion.name) + getInitials(driverChampion.surname)}
+                                </div>
+                                <div className="absolute inset-0 rounded-full border-3 sm:border-4 border-transparent border-t-red-400 border-r-red-300 animate-spin"></div>
+                              </motion.div>
+                              <div className="flex-1 min-w-0">
+                                <motion.h4
+                                  initial={{ x: -10, opacity: 0 }}
+                                  animate={{ x: 0, opacity: 1 }}
+                                  transition={{ delay: 0.3 }}
+                                  className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2 text-center sm:text-left"
+                                >
+                                  {safeText(driverChampion.name) + " " + safeText(driverChampion.surname)}
+                                </motion.h4>
+                                <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4 font-oxanium">
+                                  <motion.p
+                                    initial={{ x: -10, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    className="text-gray-300 text-sm sm:text-base flex items-center justify-center sm:justify-start"
+                                  >
+                                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full mr-2"></span>
+                                    Team: <span className="ml-1 sm:ml-2 font-semibold text-white truncate">{safeText(driverChampion.team)}</span>
+                                  </motion.p>
+                                  <motion.p
+                                    initial={{ x: -10, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="text-gray-300 text-sm sm:text-base flex items-center justify-center sm:justify-start"
+                                  >
+                                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mr-2"></span>
+                                    Nationality: <span className="ml-1 sm:ml-2 font-semibold text-white">{safeText(driverChampion.nationality)}</span>
+                                  </motion.p>
+                                </div>
+                                <motion.div
+                                  initial={{ y: 10, opacity: 0 }}
+                                  animate={{ y: 0, opacity: 1 }}
+                                  transition={{ delay: 0.6 }}
+                                  className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 text-xs sm:text-sm"
+                                >
+                                  <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                                    <span className="text-gray-400">Wins: </span>
+                                    <span className="font-bold text-white ml-1">{safeText(driverChampion.wins)}</span>
+                                  </div>
+                                  <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                                    <span className="text-gray-400">Podiums: </span>
+                                    <span className="font-bold text-white ml-1">{safeText(driverChampion.podiums)}</span>
+                                  </div>
+                                  <div className="px-2 py-1 sm:px-3 sm:pry-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                                    <span className="text-gray-400">Position: </span>
+                                    <span className="font-bold text-red-500 ml-1">#{safeText(driverChampion.position)}</span>
+                                  </div>
+                                </motion.div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
+                              No driver championship data available
+                            </div>
+                          )}
+                        </motion.div>
+                      </motion.div>
+
+                      {/* Constructor Champion - Responsive */}
+                      <motion.div
+                        variants={cardVariants}
+                        className="relative overflow-hidden rounded-xl sm:rounded-2xl p-4 sm:p-5 group"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(0, 0, 0, 0.8) 100%)',
+                          backdropFilter: 'blur(10px)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)'
+                        }}
+                      >
+                        {/* Animated background effect */}
+                        <div className="absolute inset-0 bg-linear-to-r from-blue-900/5 via-transparent to-gray-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        <motion.div
+                          initial={{ scale: 0.95, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="relative z-10"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-r from-blue-600 to-blue-700 flex items-center justify-center mr-2 sm:mr-3">
+                                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                               </div>
-                              <div className="absolute inset-0 rounded-full border-3 sm:border-4 border-transparent border-t-blue-400 border-r-blue-300 animate-spin-slow"></div>
-                            </motion.div>
-                            <div className="flex-1 min-w-0">
-                              <motion.h4
-                                initial={{ x: -10, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2 text-center sm:text-left"
+                              <h3 className="text-lg sm:text-xl font-bold text-white font-oxanium">
+                                CONSTRUCTOR CHAMPION
+                              </h3>
+                            </div>
+                            {constructorChampion?.points && (
+                              <motion.span
+                                whileHover={{ scale: 1.05 }}
+                                className="px-3 py-1 sm:px-4 sm:py-2 bg-linear-to-r from-blue-600 to-blue-800 text-white text-xs sm:text-sm font-bold rounded-full border border-blue-700 shadow-lg w-fit"
                               >
-                                {safeText(constructorChampion.name)}
-                              </motion.h4>
-                              <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4">
-                                <motion.p
+                                {safeText(constructorChampion.points)} PTS
+                              </motion.span>
+                            )}
+                          </div>
+                          
+                          {constructorChampion ? (
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6">
+                              <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                className="relative self-center sm:self-auto"
+                              >
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-linear-to-r from-blue-600 to-blue-800 flex items-center justify-center shadow-2xl">
+                                  <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                  </svg>
+                                </div>
+                                <div className="absolute inset-0 rounded-full border-3 sm:border-4 border-transparent border-t-blue-400 border-r-blue-300 animate-spin-slow"></div>
+                              </motion.div>
+                              <div className="flex-1 min-w-0 font-oxanium">
+                                <motion.h4
                                   initial={{ x: -10, opacity: 0 }}
                                   animate={{ x: 0, opacity: 1 }}
-                                  transition={{ delay: 0.5 }}
-                                  className="text-gray-300 text-sm sm:text-base flex items-center justify-center sm:justify-start"
+                                  transition={{ delay: 0.4 }}
+                                  className="text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2 text-center sm:text-left"
                                 >
-                                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mr-2"></span>
-                                  Nationality: <span className="ml-1 sm:ml-2 font-semibold text-white">{safeText(constructorChampion.nationality)}</span>
-                                </motion.p>
+                                  {safeText(constructorChampion.name)}
+                                </motion.h4>
+                                <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4">
+                                  <motion.p
+                                    initial={{ x: -10, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="text-gray-300 text-sm sm:text-base flex items-center justify-center sm:justify-start"
+                                  >
+                                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full mr-2"></span>
+                                    Nationality: <span className="ml-1 sm:ml-2 font-semibold text-white">{safeText(constructorChampion.nationality)}</span>
+                                  </motion.p>
+                                </div>
+                                <motion.div
+                                  initial={{ y: 10, opacity: 0 }}
+                                  animate={{ y: 0, opacity: 1 }}
+                                  transition={{ delay: 0.6 }}
+                                  className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 text-xs sm:text-sm"
+                                >
+                                  <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                                    <span className="text-gray-400">Wins: </span>
+                                    <span className="font-bold text-white ml-1">{safeText(constructorChampion.wins)}</span>
+                                  </div>
+                                  <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                                    <span className="text-gray-400">Points: </span>
+                                    <span className="font-bold text-white ml-1">{safeText(constructorChampion.points)}</span>
+                                  </div>
+                                  <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
+                                    <span className="text-gray-400">Position: </span>
+                                    <span className="font-bold text-blue-500 ml-1">#{safeText(constructorChampion.position)}</span>
+                                  </div>
+                                </motion.div>
                               </div>
-                              <motion.div
-                                initial={{ y: 10, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                transition={{ delay: 0.6 }}
-                                className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3 text-xs sm:text-sm"
-                              >
-                                <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
-                                  <span className="text-gray-400">Wins: </span>
-                                  <span className="font-bold text-white ml-1">{safeText(constructorChampion.wins)}</span>
-                                </div>
-                                <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
-                                  <span className="text-gray-400">Points: </span>
-                                  <span className="font-bold text-white ml-1">{safeText(constructorChampion.points)}</span>
-                                </div>
-                                <div className="px-2 py-1 sm:px-3 sm:py-1 bg-gray-800/50 rounded-lg border border-gray-700">
-                                  <span className="text-gray-400">Position: </span>
-                                  <span className="font-bold text-blue-500 ml-1">#{safeText(constructorChampion.position)}</span>
-                                </div>
-                              </motion.div>
                             </div>
-                          </div>
-                        ) : (
-                          <div className="text-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
-                            No constructor championship data available
-                          </div>
-                        )}
+                          ) : (
+                            <div className="text-center py-6 sm:py-8 text-gray-500 text-sm sm:text-base">
+                              No constructor championship data available
+                            </div>
+                          )}
+                        </motion.div>
                       </motion.div>
-                    </motion.div>
 
-                    {/* Season Wikipedia Link - Responsive */}
-                    {selectedSeason.url && (
-                      <motion.div
-                        initial={{ y: 10, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.7 }}
-                        className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-800"
-                      >
-                        <motion.a
-                          whileHover={{ x: 3 }}
-                          href={selectedSeason.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-3 bg-gray-800/30 hover:bg-gray-800/50 rounded-lg sm:rounded-xl border border-gray-700 transition-all duration-300 group text-sm sm:text-base"
-                          style={{
-                            backdropFilter: 'blur(8px)'
-                          }}
+                      {/* Season Wikipedia Link - Responsive */}
+                      {selectedSeason.url && (
+                        <motion.div
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{ delay: 0.7 }}
+                          className="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-800"
                         >
-                          <span className="text-gray-300 group-hover:text-white font-medium truncate">
-                            Learn more about {safeText(selectedSeason.year)} season
-                          </span>
-                          <motion.svg
-                            animate={{ x: [0, 3, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                            className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-red-500 shrink-0"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                          <motion.a
+                            whileHover={{ x: 3 }}
+                            href={selectedSeason.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-3 bg-gray-800/30 hover:bg-gray-800/50 rounded-lg sm:rounded-xl border border-gray-700 transition-all duration-300 group text-sm sm:text-base"
+                            style={{
+                              backdropFilter: 'blur(8px)'
+                            }}
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </motion.svg>
-                        </motion.a>
-                      </motion.div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
+                            <span className="text-gray-300 group-hover:text-white font-medium truncate font-exo2">
+                              Learn more about {safeText(selectedSeason.year)} season
+                            </span>
+                            <motion.svg
+                              animate={{ x: [0, 3, 0] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                              className="w-4 h-4 sm:w-5 sm:h-5 ml-2 sm:ml-3 text-red-500 shrink-0"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </motion.svg>
+                          </motion.a>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Mobile indicator */}
+        <div className="md:hidden text-center mt-4">
+          <p className="text-gray-400 text-sm">
+            Tap on a season to view championship details
+          </p>
         </div>
 
         {/* Footer - Responsive */}
@@ -765,6 +983,9 @@ const F1SeasonInfo = () => {
           <p className="mt-1 sm:mt-2">Experience the thrill of F1 history</p>
         </motion.div>
       </div>
+
+      {/* Mobile Popup */}
+      <MobilePopup />
 
       {/* Add custom styles for scrollbar */}
       <style jsx>{`
@@ -820,6 +1041,4 @@ const F1SeasonInfo = () => {
       `}</style>
     </div>
   );
-};
-
-export default F1SeasonInfo;
+}

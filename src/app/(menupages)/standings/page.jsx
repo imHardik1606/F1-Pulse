@@ -236,14 +236,14 @@ const F1ChampionshipStandings = () => {
   // ========== COMPONENTS ==========
 
   const LoadingState = () => (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-black to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-950 via-black to-gray-900">
       <div className="relative">
         <div className="w-32 h-32 border-4 border-gray-800 rounded-full"></div>
         <div className="absolute top-0 left-0 w-32 h-32 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
         <div className="mt-8 space-y-4">
           <div className="text-center">
             <div className="w-48 h-2 bg-gray-800 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-red-600 via-red-500 to-red-600 animate-pulse"></div>
+              <div className="h-full bg-linear-to-r from-red-600 via-red-500 to-red-600 animate-pulse"></div>
             </div>
             <p className="mt-4 text-gray-400 font-medium tracking-wider">LOADING CHAMPIONSHIP DATA</p>
           </div>
@@ -253,16 +253,16 @@ const F1ChampionshipStandings = () => {
   );
 
   const ErrorState = () => (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-black to-gray-900 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-950 via-black to-gray-900 p-6">
       <div className="max-w-md text-center bg-gray-900/50 backdrop-blur-xl rounded-3xl p-10 border border-gray-800 shadow-2xl">
-        <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-red-900/40 to-red-800/20 rounded-full flex items-center justify-center border border-red-800/30 animate-pulse">
+        <div className="w-24 h-24 mx-auto mb-8 bg-linear-to-br from-red-900/40 to-red-800/20 rounded-full flex items-center justify-center border border-red-800/30 animate-pulse">
           <Zap className="w-12 h-12 text-red-500" />
         </div>
-        <h3 className="text-3xl font-bold text-white mb-4 bg-gradient-to-r from-white to-red-200 bg-clip-text text-transparent">CONNECTION ERROR</h3>
+        <h3 className="text-3xl font-bold text-transparent mb-4 bg-linear-to-r from-white to-red-200 bg-clip-text">CONNECTION ERROR</h3>
         <p className="text-gray-400 mb-8">{error}</p>
         <button
           onClick={fetchStandings}
-          className="group px-8 py-4 bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white font-bold rounded-2xl hover:from-red-700 hover:via-red-600 hover:to-red-700 transition-all duration-300 shadow-2xl shadow-red-900/50 hover:shadow-red-900/70 uppercase tracking-widest text-sm flex items-center justify-center gap-3 mx-auto"
+          className="group px-8 py-4 bg-linear-to-r from-red-600 via-red-500 to-red-600 text-white font-bold rounded-2xl hover:from-red-700 hover:via-red-600 hover:to-red-700 transition-all duration-300 shadow-2xl shadow-red-900/50 hover:shadow-red-900/70 uppercase tracking-widest text-sm flex items-center justify-center gap-3 mx-auto"
         >
           <RefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
           RETRY CONNECTION
@@ -278,7 +278,7 @@ const F1ChampionshipStandings = () => {
     return (
       <div className="lg:hidden space-y-4 mb-8">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-linear-to-br from-yellow-500 to-amber-600 flex items-center justify-center">
             <Trophy className="w-5 h-5 text-black" />
           </div>
           <h2 className="text-2xl font-bold text-white">Championship Leaders</h2>
@@ -287,9 +287,9 @@ const F1ChampionshipStandings = () => {
         <div className="space-y-4">
           {topDrivers.map((driver, index) => {
             const colors = [
-              { bg: 'bg-gradient-to-r from-yellow-600/20 to-amber-700/10', border: 'border-yellow-500/30', text: 'text-yellow-400' },
-              { bg: 'bg-gradient-to-r from-gray-500/20 to-gray-600/10', border: 'border-gray-400/30', text: 'text-gray-300' },
-              { bg: 'bg-gradient-to-r from-amber-800/20 to-amber-900/10', border: 'border-amber-700/30', text: 'text-amber-400' }
+              { bg: 'bg-linear-to-r from-yellow-600/20 to-amber-700/10', border: 'border-yellow-500/30', text: 'text-yellow-400' },
+              { bg: 'bg-linear-to-r from-gray-500/20 to-gray-600/10', border: 'border-gray-400/30', text: 'text-gray-300' },
+              { bg: 'bg-linear-to-r from-amber-800/20 to-amber-900/10', border: 'border-amber-700/30', text: 'text-amber-400' }
             ];
             
             const colorSet = colors[index];
@@ -354,130 +354,137 @@ const F1ChampionshipStandings = () => {
   MobilePodiumList.displayName = 'MobilePodiumList';
 
   // ========== PODIUM DETAIL MODAL ==========
-  const PodiumDetailModal = memo(({ driver, onClose }) => {
-    if (!driver) return null;
+const PodiumDetailModal = memo(({ driver, onClose }) => {
+  if (!driver) return null;
 
-    return (
+  const teamColor = getTeamColor(driver.teamId);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-        onClick={onClose}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-gradient-to-br from-gray-900 to-black rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-800 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
       >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-gradient-to-br from-gray-900 to-black rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-800 shadow-2xl"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="p-6 border-b border-gray-800">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 rounded-full ${
-                  driver.position === 1 ? 'bg-gradient-to-br from-yellow-500 to-amber-600' :
-                  driver.position === 2 ? 'bg-gradient-to-br from-gray-400 to-gray-600' :
-                  'bg-gradient-to-br from-amber-700 to-amber-900'
-                } flex items-center justify-center`}>
-                  <span className="text-xl font-bold text-white">P{driver.position}</span>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">{driver.driver.shortName}</h3>
-                  <p className="text-sm text-gray-400">{driver.team.teamName}</p>
-                </div>
+        {/* Header */}
+        <div className="p-6 border-b border-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-full ${
+                driver.position === 1 ? 'bg-gradient-to-br from-yellow-500 to-amber-600' :
+                driver.position === 2 ? 'bg-gradient-to-br from-gray-400 to-gray-600' :
+                'bg-gradient-to-br from-amber-700 to-amber-900'
+              } flex items-center justify-center`}>
+                <span className="text-xl font-bold text-white">P{driver.position}</span>
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-800/50 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-400" />
-              </button>
+              <div>
+                <h3 className="text-xl font-bold text-white">{driver.driver.shortName}</h3>
+                <p className="text-sm text-gray-400">{driver.team.teamName}</p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-800/50 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-400" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Content */}
+        <div className="p-6">
+          {/* Driver Image */}
+          <div className="relative w-32 h-32 mx-auto mb-6 rounded-full border-4 border-gray-800 overflow-hidden bg-gradient-to-br from-gray-900 to-black">
+            {loadingPictures[driver.driverId] ? (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="w-10 h-10 border-3 border-gray-600 border-t-white rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              <img
+                src={driverPictures[driver.driverId] || generateDriverPlaceholder(driver.driverId)}
+                alt={`${driver.driver.name} ${driver.driver.surname}`}
+                className="w-full h-full object-cover"
+              />
+            )}
+            {/* Team color ring */}
+            <div 
+              className="absolute inset-0 rounded-full border-4 opacity-30"
+              style={{ borderColor: teamColor }}
+            />
+          </div>
+          
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-4 rounded-2xl border border-gray-700/30">
+              <div className="text-sm text-gray-400 mb-2">POINTS</div>
+              <div className="text-2xl font-bold text-white">{driver.points}</div>
+            </div>
+            <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-4 rounded-2xl border border-gray-700/30">
+              <div className="text-sm text-gray-400 mb-2">WINS</div>
+              <div className="text-2xl font-bold text-white">{driver.wins}</div>
             </div>
           </div>
           
-          {/* Content */}
-          <div className="p-6">
-            {/* Driver Image */}
-            <div className="relative w-32 h-32 mx-auto mb-6 rounded-full border-4 border-gray-800 overflow-hidden bg-gradient-to-br from-gray-900 to-black">
-              {loadingPictures[driver.driverId] ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-10 h-10 border-3 border-gray-600 border-t-white rounded-full animate-spin"></div>
-                </div>
-              ) : (
-                <img
-                  src={driverPictures[driver.driverId] || generateDriverPlaceholder(driver.driverId)}
-                  alt={`${driver.driver.name} ${driver.driver.surname}`}
-                  className="w-full h-full object-cover"
-                />
-              )}
+          {/* Details */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
+              <div className="flex items-center gap-3">
+                <User className="w-5 h-5 text-gray-400" />
+                <span className="text-gray-400">Driver</span>
+              </div>
+              <span className="text-white font-medium">{driver.driver.name} {driver.driver.surname}</span>
             </div>
             
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-4 rounded-2xl border border-gray-700/30">
-                <div className="text-sm text-gray-400 mb-2">POINTS</div>
-                <div className="text-2xl font-bold text-white">{driver.points}</div>
+            <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Flag className="w-5 h-5 text-gray-400" />
+                <span className="text-gray-400">Nationality</span>
               </div>
-              <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-4 rounded-2xl border border-gray-700/30">
-                <div className="text-sm text-gray-400 mb-2">WINS</div>
-                <div className="text-2xl font-bold text-white">{driver.wins}</div>
-              </div>
+              <span className="text-white font-medium">{driver.driver.nationality}</span>
             </div>
             
-            {/* Details */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-400">Driver</span>
-                </div>
-                <span className="text-white font-medium">{driver.driver.name} {driver.driver.surname}</span>
+            <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-gray-400" />
+                <span className="text-gray-400">Team</span>
               </div>
-              
-              <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Flag className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-400">Nationality</span>
-                </div>
-                <span className="text-white font-medium">{driver.driver.nationality}</span>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Shield className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-400">Team</span>
-                </div>
-                <span className="text-white font-medium">{driver.team.teamName}</span>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Car className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-400">Number</span>
-                </div>
-                <span className="text-white font-medium">#{driver.driver.number}</span>
-              </div>
+              <span className="text-white font-medium">{driver.team.teamName}</span>
             </div>
             
-            {/* Wikipedia Button */}
-            <a
-              href={driver.driver.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-xl hover:from-red-700 hover:to-red-900 transition-all duration-300 flex items-center justify-center gap-3"
-            >
-              <ExternalLink className="w-5 h-5" />
-              View Wikipedia Profile
-            </a>
+            <div className="flex items-center justify-between p-3 bg-gray-800/20 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Car className="w-5 h-5 text-gray-400" />
+                <span className="text-gray-400">Number</span>
+              </div>
+              <span className="text-white font-medium">#{driver.driver.number}</span>
+            </div>
           </div>
-        </motion.div>
+          
+          {/* Wikipedia Button */}
+          <a
+            href={driver.driver.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full mt-6 px-4 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold rounded-xl hover:from-red-700 hover:to-red-900 transition-all duration-300 flex items-center justify-center gap-3"
+          >
+            <ExternalLink className="w-5 h-5" />
+            View Wikipedia Profile
+          </a>
+        </div>
       </motion.div>
-    );
-  });
+    </motion.div>
+  );
+});
 
-  PodiumDetailModal.displayName = 'PodiumDetailModal';
+PodiumDetailModal.displayName = 'PodiumDetailModal';
 
   // ========== MODERN PODIUM DESIGN ==========
   const ModernPodium = memo(({ topDrivers }) => {
@@ -487,7 +494,7 @@ const F1ChampionshipStandings = () => {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`relative bg-gradient-to-br from-gray-900/40 to-black/60 backdrop-blur-xl rounded-3xl border border-gray-800/30 shadow-2xl overflow-hidden ${
+        className={`relative bg-linear-to-br from-gray-900/40 to-black/60 backdrop-blur-xl rounded-3xl border border-gray-800/30 shadow-2xl overflow-hidden ${
           expandedPodium ? 'lg:col-span-2' : ''
         } hidden lg:block`}
       >
@@ -497,7 +504,7 @@ const F1ChampionshipStandings = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl rotate-45 flex items-center justify-center">
+                  <div className="w-14 h-14 bg-linear-to-br from-yellow-500 to-amber-600 rounded-2xl rotate-45 flex items-center justify-center">
                     <Trophy className="w-7 h-7 text-white rotate-45" />
                   </div>
                   <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
@@ -509,7 +516,7 @@ const F1ChampionshipStandings = () => {
                   <p className="text-gray-400 text-sm">Current Championship Podium</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600/20 to-red-800/20 rounded-full border border-red-800/30">
+              <div className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-red-600/20 to-red-800/20 rounded-full border border-red-800/30">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                 <span className="text-sm text-gray-300">LIVE STANDINGS</span>
               </div>
@@ -518,31 +525,31 @@ const F1ChampionshipStandings = () => {
 
           {/* Podium Container */}
           <div className="p-8">
-            <div className="relative h-48 mb-32">
+            <div className="relative h-70 mb-32">
               {/* Podium Platform */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-900/80 to-gray-800/40 rounded-3xl border border-gray-800/50">
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-gray-900/80 to-gray-800/40 rounded-3xl border border-gray-800/50">
                 {/* Platform levels */}
-                <div className="absolute bottom-0 left-1/4 w-1/4 h-24 bg-gradient-to-t from-gray-800 to-gray-900 rounded-t-2xl border-l border-r border-t border-gray-700/50">
+                <div className="absolute bottom-0 left-1/4 w-1/4 h-24 bg-linear-to-t from-gray-800 to-gray-900 rounded-t-2xl border-l border-r border-t border-gray-700/50">
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-                    <div className="w-12 h-6 bg-gradient-to-b from-gray-400 to-gray-600 rounded-t-full"></div>
+                    <div className="w-12 h-6 bg-linear-to-b from-gray-400 to-gray-600 rounded-t-full"></div>
                   </div>
                 </div>
                 
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/4 h-28 bg-gradient-to-t from-amber-900/30 to-yellow-900/20 rounded-t-2xl border-l border-r border-t border-amber-800/30">
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1/4 h-28 bg-linear-to-t from-amber-900/30 to-yellow-900/20 rounded-t-2xl border-l border-r border-t border-amber-800/30">
                   <div className="absolute -top-7 left-1/2 transform -translate-x-1/2">
-                    <div className="w-14 h-7 bg-gradient-to-b from-yellow-500 to-amber-600 rounded-t-full"></div>
+                    <div className="w-14 h-7 bg-linear-to-b from-yellow-500 to-amber-600 rounded-t-full"></div>
                   </div>
                 </div>
                 
-                <div className="absolute bottom-0 right-1/4 w-1/4 h-20 bg-gradient-to-t from-gray-800 to-gray-900 rounded-t-2xl border-l border-r border-t border-gray-700/50">
+                <div className="absolute bottom-0 right-1/4 w-1/4 h-20 bg-linear-to-t from-gray-800 to-gray-900 rounded-t-2xl border-l border-r border-t border-gray-700/50">
                   <div className="absolute -top-6 left-1/2 transform -translate-x-1/2">
-                    <div className="w-12 h-6 bg-gradient-to-b from-amber-800 to-amber-900 rounded-t-full"></div>
+                    <div className="w-12 h-6 bg-linear-to-b from-amber-800 to-amber-900 rounded-t-full"></div>
                   </div>
                 </div>
               </div>
 
               {/* Driver Cards */}
-              <div className="absolute -bottom-32 left-0 right-0 px-8">
+              <div className="absolute -bottom-32 left-0 right-0 px-8 top-7">
                 <div className="grid grid-cols-3 gap-8">
                   {topDrivers.map((driver, index) => (
                     <motion.div
@@ -558,25 +565,25 @@ const F1ChampionshipStandings = () => {
                       {/* Driver Card */}
                       <div className={`relative rounded-3xl overflow-hidden backdrop-blur-sm border transition-all duration-500 group-hover:scale-105 ${
                         index === 0 
-                          ? 'bg-gradient-to-b from-yellow-900/30 to-amber-900/20 border-amber-800/30' 
+                          ? 'bg-linear-to-b from-yellow-900/30 to-amber-900/20 border-amber-800/30' 
                           : index === 1
-                          ? 'bg-gradient-to-b from-gray-800/40 to-gray-900/30 border-gray-700/30'
-                          : 'bg-gradient-to-b from-amber-900/30 to-amber-950/20 border-amber-800/30'
+                          ? 'bg-linear-to-b from-gray-800/40 to-gray-900/30 border-gray-700/30'
+                          : 'bg-linear-to-b from-amber-900/30 to-amber-950/20 border-amber-800/30'
                       }`}>
                         {/* Position indicator */}
                         <div className={`absolute -top-4 left-1/2 transform -translate-x-1/2 w-14 h-14 rounded-2xl rotate-45 border-2 shadow-xl flex items-center justify-center ${
                           index === 0 
-                            ? 'bg-gradient-to-br from-yellow-500 to-amber-600 border-yellow-400' 
+                            ? 'bg-linear-to-br from-yellow-500 to-amber-600 border-yellow-400' 
                             : index === 1
-                            ? 'bg-gradient-to-br from-gray-400 to-gray-600 border-gray-300'
-                            : 'bg-gradient-to-br from-amber-700 to-amber-900 border-amber-600'
+                            ? 'bg-linear-to-br from-gray-400 to-gray-600 border-gray-300'
+                            : 'bg-linear-to-br from-amber-700 to-amber-900 border-amber-600'
                         }`}>
                           <span className="text-xl font-bold text-white -rotate-45">P{index + 1}</span>
                         </div>
 
                         {/* Driver Image */}
                         <div className="pt-12 px-6">
-                          <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-white/10 bg-gradient-to-b from-gray-900 to-black">
+                          <div className="relative w-full aspect-square rounded-2xl overflow-hidden border-2 border-white/10 bg-linear-to-b from-gray-900 to-black">
                             {loadingPictures[driver.driverId] ? (
                               <div className="w-full h-full flex items-center justify-center">
                                 <div className="w-10 h-10 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -626,8 +633,8 @@ const F1ChampionshipStandings = () => {
 
                       {/* Leader badge */}
                       {index === 0 && (
-                        <div className="absolute -top-6 right-4">
-                          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-600/30 to-amber-600/20 px-3 py-1.5 rounded-full border border-yellow-500/30">
+                        <div className="absolute top-4">
+                          <div className="flex items-center gap-2 bg-linear-to-r from-yellow-600/30 to-amber-600/20 px-3 py-1.5 rounded-full border border-yellow-500/30">
                             <Crown className="w-3 h-3 text-yellow-400" />
                             <span className="text-xs font-medium text-yellow-300">LEADER</span>
                           </div>
@@ -654,12 +661,12 @@ const F1ChampionshipStandings = () => {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="relative bg-gradient-to-br from-gray-900/40 to-black/60 backdrop-blur-xl rounded-3xl border border-gray-800/30 shadow-2xl overflow-hidden hidden lg:block"
+        className="relative bg-linear-to-br from-gray-900/40 to-black/60 backdrop-blur-xl rounded-3xl border border-gray-800/30 shadow-2xl overflow-hidden hidden lg:block"
       >
         <div className="relative p-8">
           <div className="flex items-center justify-between mb-12">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl flex items-center justify-center">
+              <div className="w-14 h-14 bg-linear-to-br from-red-600 to-red-800 rounded-2xl flex items-center justify-center">
                 <ZapIcon className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -672,7 +679,7 @@ const F1ChampionshipStandings = () => {
           {/* Timeline track */}
           <div className="relative h-32 mb-12">
             {/* Main track line */}
-            <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"></div>
+            <div className="absolute top-1/2 left-0 right-0 h-1 bg-linear-to-r from-gray-800 via-gray-700 to-gray-800"></div>
             
             {/* Driver markers */}
             {topDrivers.map((driver, index) => {
@@ -693,10 +700,10 @@ const F1ChampionshipStandings = () => {
                     onClick={() => handleItemSelect(driver)}
                     className={`relative w-16 h-16 rounded-full border-4 cursor-pointer group hover:scale-110 transition-transform duration-300 ${
                       index === 0 
-                        ? 'border-yellow-500 bg-gradient-to-br from-yellow-600/20 to-amber-700/20' 
+                        ? 'border-yellow-500 bg-linear-to-br from-yellow-600/20 to-amber-700/20' 
                         : index === 1
-                        ? 'border-gray-400 bg-gradient-to-br from-gray-700/20 to-gray-800/20'
-                        : 'border-amber-600 bg-gradient-to-br from-amber-800/20 to-amber-900/20'
+                        ? 'border-gray-400 bg-linear-to-br from-gray-700/20 to-gray-800/20'
+                        : 'border-amber-600 bg-linear-to-br from-amber-800/20 to-amber-900/20'
                     }`}
                   >
                     {/* Driver image */}
@@ -717,10 +724,10 @@ const F1ChampionshipStandings = () => {
                     {/* Position badge */}
                     <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full border-2 border-gray-900 flex items-center justify-center shadow-lg ${
                       index === 0 
-                        ? 'bg-gradient-to-br from-yellow-500 to-amber-600' 
+                        ? 'bg-linear-to-br from-yellow-500 to-amber-600' 
                         : index === 1
-                        ? 'bg-gradient-to-br from-gray-400 to-gray-600'
-                        : 'bg-gradient-to-br from-amber-700 to-amber-900'
+                        ? 'bg-linear-to-br from-gray-400 to-gray-600'
+                        : 'bg-linear-to-br from-amber-700 to-amber-900'
                     }`}>
                       <span className="text-xs font-bold text-white">{index + 1}</span>
                     </div>
@@ -741,19 +748,19 @@ const F1ChampionshipStandings = () => {
                 onClick={() => handleItemSelect(driver)}
                 className={`p-4 rounded-2xl cursor-pointer group hover:scale-[1.02] transition-all duration-300 ${
                   index === 0 
-                    ? 'bg-gradient-to-br from-yellow-900/20 to-amber-900/10 border border-amber-800/30' 
+                    ? 'bg-linear-to-br from-yellow-900/20 to-amber-900/10 border border-amber-800/30' 
                     : index === 1
-                    ? 'bg-gradient-to-br from-gray-800/20 to-gray-900/10 border border-gray-700/30'
-                    : 'bg-gradient-to-br from-amber-900/20 to-amber-950/10 border border-amber-800/30'
+                    ? 'bg-linear-to-br from-gray-800/20 to-gray-900/10 border border-gray-700/30'
+                    : 'bg-linear-to-br from-amber-900/20 to-amber-950/10 border border-amber-800/30'
                 }`}
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                     index === 0 
-                      ? 'bg-gradient-to-br from-yellow-500/20 to-amber-600/20' 
+                      ? 'bg-linear-to-br from-yellow-500/20 to-amber-600/20' 
                       : index === 1
-                      ? 'bg-gradient-to-br from-gray-500/20 to-gray-600/20'
-                      : 'bg-gradient-to-br from-amber-700/20 to-amber-800/20'
+                      ? 'bg-linear-to-br from-gray-500/20 to-gray-600/20'
+                      : 'bg-linear-to-br from-amber-700/20 to-amber-800/20'
                   }`}>
                     <span className={`text-xl font-bold ${
                       index === 0 ? 'text-yellow-400' : 
@@ -809,9 +816,9 @@ const F1ChampionshipStandings = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.03 }}
         onClick={() => handleItemSelect(driver)}
-        className={`group relative p-4 sm:p-6 rounded-2xl border border-gray-800/50 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:border-red-500/30 hover:shadow-2xl hover:shadow-red-900/20 ${
+        className={`group relative p-4 sm:p-6 rounded-2xl border border-gray-800/50 bg-linear-to-br from-gray-900/50 to-black/50 backdrop-blur-sm cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:border-red-500/30 hover:shadow-2xl hover:shadow-red-900/20 ${
           selectedItem?.classificationId === driver.classificationId 
-            ? 'ring-2 ring-red-500 border-red-500/50 bg-gradient-to-br from-gray-800/60 to-black/60' 
+            ? 'ring-2 ring-red-500 border-red-500/50 bg-linear-to-br from-gray-800/60 to-black/60' 
             : ''
         }`}
       >
@@ -819,16 +826,16 @@ const F1ChampionshipStandings = () => {
           {/* Position */}
           <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-bold text-xl sm:text-2xl shadow-xl ${
             driver.position <= 3 
-              ? driver.position === 1 ? 'bg-gradient-to-br from-yellow-500 to-yellow-600' : 
-                driver.position === 2 ? 'bg-gradient-to-br from-gray-400 to-gray-500' : 
-                'bg-gradient-to-br from-amber-700 to-amber-800'
-              : 'bg-gradient-to-br from-red-600 to-red-800'
+              ? driver.position === 1 ? 'bg-linear-to-br from-yellow-500 to-yellow-600' : 
+                driver.position === 2 ? 'bg-linear-to-br from-gray-400 to-gray-500' : 
+                'bg-linear-to-br from-amber-700 to-amber-800'
+              : 'bg-linear-to-br from-red-600 to-red-800'
           } text-white`}>
             {driver.position}
           </div>
           
           {/* Driver Photo */}
-          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-gray-700/50 overflow-hidden bg-gradient-to-br from-gray-800 to-black">
+          <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-gray-700/50 overflow-hidden bg-linear-to-br from-gray-800 to-black">
             {loadingPictures[driver.driverId] && !driverPictures[driver.driverId] ? (
               <div className="w-full h-full flex items-center justify-center">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin"></div>
@@ -879,7 +886,7 @@ const F1ChampionshipStandings = () => {
           
           {/* Points */}
           <div className="text-right">
-            <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-red-500 via-red-400 to-red-500 bg-clip-text text-transparent">
+            <div className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-red-500 via-red-400 to-red-500 bg-clip-text text-transparent">
               {driver.points}
             </div>
             <div className="text-xs text-gray-500 mt-1">PTS</div>
@@ -887,19 +894,74 @@ const F1ChampionshipStandings = () => {
         </div>
         
         {/* Progress bar */}
-        <div className="mt-4 h-1.5 bg-gray-800/50 rounded-full overflow-hidden">
+        {/* <div className="mt-4 h-1.5 bg-gray-800/50 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-red-600 to-red-800 rounded-full transition-all duration-700"
+            className="h-full bg-linear-to-r from-red-600 to-red-800 rounded-full transition-all duration-700"
             style={{ 
               width: `${Math.min((driver.points / 500) * 100, 100)}%` 
             }}
           />
-        </div>
+        </div> */}
       </motion.div>
     );
   });
 
   DriverCard.displayName = 'DriverCard';
+
+    const ConstructorCard = memo(({ constructor, index }) => {
+    const isSelected = selectedItem?.teamId === constructor.teamId;
+
+    return (
+      <div
+        onClick={() => handleItemSelect(constructor)}
+        className={`group p-4 rounded-xl border border-gray-800 bg-gray-900/50 cursor-pointer transition-all hover:border-blue-500/30 hover:bg-gray-800/50 ${
+          isSelected ? 'ring-2 ring-blue-500 border-blue-500/50' : ''
+        }`}
+      >
+        <div className="flex items-center gap-4">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${
+            constructor.position <= 3 
+              ? constructor.position === 1 ? 'bg-gradient-to-br from-yellow-500 to-yellow-600' : 
+                constructor.position === 2 ? 'bg-gradient-to-br from-gray-400 to-gray-500' : 
+                'bg-gradient-to-br from-amber-700 to-amber-800'
+              : 'bg-gradient-to-br from-blue-600 to-blue-800'
+          } text-white`}>
+            {constructor.position}
+          </div>
+          
+          <div className="relative w-10 h-10 rounded-full border-2 border-gray-700 overflow-hidden bg-gray-800 flex items-center justify-center">
+            <Car className="w-6 h-6 text-gray-400" />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="font-bold text-white truncate">
+                {constructor.team.teamName}
+              </h4>
+            </div>
+            <p className="text-sm text-gray-400 truncate">{constructor.team.country}</p>
+            {constructor.team.constructorsChampionships > 0 && (
+              <div className="flex items-center gap-1 mt-1">
+                <Trophy className="w-3 h-3 text-yellow-500" />
+                <span className="text-xs text-yellow-400">
+                  {constructor.team.constructorsChampionships} titles
+                </span>
+              </div>
+            )}
+          </div>
+          
+          <div className="text-right">
+            <div className="text-2xl font-bold text-blue-500">
+              {constructor.points}
+            </div>
+            <div className="text-xs text-gray-500">PTS</div>
+          </div>
+        </div>
+      </div>
+    );
+  });
+
+  ConstructorCard.displayName = 'ConstructorCard';
 
   // ========== DETAIL PANEL ==========
   const DetailPanel = () => {
@@ -914,7 +976,7 @@ const F1ChampionshipStandings = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 20 }}
-        className="lg:sticky lg:top-6 h-fit rounded-3xl border border-gray-800/50 bg-gradient-to-br from-gray-900/80 to-black/80 backdrop-blur-xl p-6 sm:p-8 shadow-2xl"
+        className="lg:sticky lg:top-6 h-fit rounded-3xl border border-gray-800/50 bg-linear-to-br from-gray-900/80 to-black/80 backdrop-blur-xl p-6 sm:p-8 shadow-2xl"
       >
         {/* Mobile close button */}
         {showMobileDetail && (
@@ -931,7 +993,7 @@ const F1ChampionshipStandings = () => {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Image */}
             <div className="relative">
-              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-gray-800/50 overflow-hidden shadow-2xl bg-gradient-to-br from-gray-900 to-black">
+              <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-gray-800/50 overflow-hidden shadow-2xl bg-linear-to-br from-gray-900 to-black">
                 {isDriver ? (
                   pictureLoading && !driverPicture ? (
                     <div className="w-full h-full flex items-center justify-center">
@@ -955,14 +1017,14 @@ const F1ChampionshipStandings = () => {
               </div>
               
               {/* Position Badge */}
-              <div className="absolute -top-2 -right-2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-red-600 to-red-800 border-4 border-black flex items-center justify-center shadow-2xl">
+              <div className="absolute -top-2 -right-2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-linear-to-br from-red-600 to-red-800 border-4 border-black flex items-center justify-center shadow-2xl">
                 <span className="text-xl sm:text-2xl font-bold text-white">P{selectedItem.position}</span>
               </div>
             </div>
             
             {/* Info */}
             <div className="flex-1 min-w-0 text-center sm:text-left">
-              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 truncate bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              <h3 className="text-2xl sm:text-3xl font-bold mb-2 truncate bg-linear-to-r from-white to-gray-300 bg-clip-text text-transparent">
                 {isDriver ? `${selectedItem.driver.name} ${selectedItem.driver.surname}` : selectedItem.team.teamName}
               </h3>
               <p className="text-gray-400 text-base sm:text-lg mb-4 truncate">
@@ -971,11 +1033,11 @@ const F1ChampionshipStandings = () => {
               
               {/* Stats Grid */}
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 rounded-2xl border border-gray-700/30">
+                <div className="bg-linear-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 rounded-2xl border border-gray-700/30">
                   <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">POINTS</div>
                   <div className="text-2xl sm:text-3xl font-bold text-white">{selectedItem.points}</div>
                 </div>
-                <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 rounded-2xl border border-gray-700/30">
+                <div className="bg-linear-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 rounded-2xl border border-gray-700/30">
                   <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">WINS</div>
                   <div className="text-2xl sm:text-3xl font-bold text-white">{selectedItem.wins}</div>
                 </div>
@@ -988,9 +1050,9 @@ const F1ChampionshipStandings = () => {
         <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
           {isDriver ? (
             <>
-              <div className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-800/20 to-black/20 rounded-2xl border border-gray-700/30">
+              <div className="flex items-center justify-between p-3 sm:p-4 bg-linear-to-r from-gray-800/20 to-black/20 rounded-2xl border border-gray-700/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-900/30 to-red-800/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-linear-to-br from-red-900/30 to-red-800/20 flex items-center justify-center">
                     <User className="w-5 h-5 text-red-400" />
                   </div>
                   <div>
@@ -1007,7 +1069,7 @@ const F1ChampionshipStandings = () => {
           ) : (
             <>
               {selectedItem.team.constructorsChampionships > 0 && (
-                <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-900/20 to-amber-800/10 rounded-2xl border border-amber-700/30">
+                <div className="p-4 sm:p-5 bg-linear-to-br from-amber-900/20 to-amber-800/10 rounded-2xl border border-amber-700/30">
                   <div className="flex items-center gap-3 mb-2">
                     <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
                     <div className="text-base sm:text-lg font-semibold text-amber-300">CONSTRUCTORS TITLES</div>
@@ -1026,7 +1088,7 @@ const F1ChampionshipStandings = () => {
           href={isDriver ? selectedItem.driver.url : selectedItem.team.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block w-full px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white font-bold rounded-2xl hover:from-red-700 hover:via-red-600 hover:to-red-700 transition-all duration-300 shadow-lg shadow-red-900/30 hover:shadow-red-900/50 text-center uppercase tracking-widest text-xs sm:text-sm flex items-center justify-center gap-2 sm:gap-3"
+          className="flex w-full px-4 py-3 sm:px-6 sm:py-4 bg-linear-to-r from-red-600 via-red-500 to-red-600 text-white font-bold rounded-2xl hover:from-red-700 hover:via-red-600 hover:to-red-700 transition-all duration-300 shadow-lg shadow-red-900/30 hover:shadow-red-900/50 text-center uppercase tracking-widest text-xs sm:text-sm items-center justify-center gap-2 sm:gap-3"
         >
           <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
           VIEW WIKIPEDIA
@@ -1045,7 +1107,7 @@ const F1ChampionshipStandings = () => {
     : constructorsData?.constructors_championship;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-gray-900">
+    <div className="min-h-screen bg-linear-to-br from-black via-gray-950 to-gray-900">
       {/* Mobile Detail Overlay */}
       <AnimatePresence>
         {showMobileDetail && (
@@ -1061,7 +1123,7 @@ const F1ChampionshipStandings = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: "spring", damping: 25, stiffness: 100 }}
-              className="absolute right-0 top-0 h-full w-full max-w-md bg-gradient-to-b from-gray-950 to-black shadow-2xl overflow-y-auto"
+              className="absolute right-0 top-0 h-full w-full max-w-md bg-linear-to-b from-gray-950 to-black shadow-2xl overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-4 sm:p-6">
@@ -1090,14 +1152,14 @@ const F1ChampionshipStandings = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8 sm:mb-12 text-center px-2"
         >
-          <div className="inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-red-600/20 via-red-500/30 to-red-600/20 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full mb-6 sm:mb-8 shadow-xl sm:shadow-2xl shadow-red-900/20 border border-red-800/30 backdrop-blur-sm">
+          <div className="inline-flex items-center gap-2 sm:gap-3 bg-linear-to-r from-red-600/20 via-red-500/30 to-red-600/20 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full mb-6 sm:mb-8 shadow-xl sm:shadow-2xl shadow-red-900/20 border border-red-800/30 backdrop-blur-sm">
             <Timer className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="font-bold tracking-widest text-xs sm:text-sm">F1 {currentData?.season} CHAMPIONSHIP</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 bg-gradient-to-r from-white via-red-100 to-red-300 bg-clip-text text-transparent px-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-linear-to-r from-white via-red-100 to-red-300 bg-clip-text text-transparent px-2">
             {activeTab === 'drivers' ? 'DRIVERS' : 'CONSTRUCTORS'} STANDINGS
           </h1>
-          <div className="w-32 sm:w-40 h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600 mx-auto rounded-full shadow-lg shadow-red-600/30" />
+          <div className="w-32 sm:w-40 h-1 bg-linear-to-r from-red-600 via-red-500 to-red-600 mx-auto rounded-full shadow-lg shadow-red-600/30" />
           <p className="text-gray-400 mt-4 sm:mt-6 max-w-3xl mx-auto text-sm sm:text-base md:text-lg px-2">
             Real-time standings for the {currentData?.season} Formula 1 season • {currentData?.total} entries
           </p>
@@ -1122,7 +1184,7 @@ const F1ChampionshipStandings = () => {
                   }}
                   className={`flex-1 px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold sm:font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm ${
                     activeTab === tab
-                      ? 'bg-gradient-to-r from-red-600 to-red-800 text-white shadow-lg'
+                      ? 'bg-linear-to-r from-red-600 to-red-800 text-white shadow-lg'
                       : 'text-gray-500 hover:text-gray-300 hover:bg-gray-800/30'
                   }`}
                 >
@@ -1148,7 +1210,7 @@ const F1ChampionshipStandings = () => {
                 onClick={() => setStatsMode(!statsMode)}
                 className={`px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${
                   statsMode
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white'
+                    ? 'bg-linear-to-r from-blue-600 to-blue-800 text-white'
                     : 'bg-gray-900/50 text-gray-400 hover:text-white hover:bg-gray-800/30 border border-gray-800'
                 }`}
               >
@@ -1174,7 +1236,7 @@ const F1ChampionshipStandings = () => {
                 onClick={() => setViewMode('grid')}
                 className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${
                   viewMode === 'grid'
-                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white'
+                    ? 'bg-linear-to-r from-gray-800 to-gray-900 text-white'
                     : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
@@ -1185,7 +1247,7 @@ const F1ChampionshipStandings = () => {
                 onClick={() => setViewMode('list')}
                 className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md sm:rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm ${
                   viewMode === 'list'
-                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white'
+                    ? 'bg-linear-to-r from-gray-800 to-gray-900 text-white'
                     : 'text-gray-500 hover:text-gray-300'
                 }`}
               >
@@ -1201,22 +1263,22 @@ const F1ChampionshipStandings = () => {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 sm:mb-8 lg:mb-10 bg-gradient-to-r from-gray-900/50 to-black/50 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-800/50 shadow-xl sm:shadow-2xl mx-2"
+            className="mb-6 sm:mb-8 lg:mb-10 bg-linear-to-r from-gray-900/50 to-black/50 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-800/50 shadow-xl sm:shadow-2xl mx-2"
           >
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-              <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
+              <div className="bg-linear-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
                 <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">TOTAL ENTRIES</div>
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">{currentData?.total}</div>
               </div>
-              <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
+              <div className="bg-linear-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
                 <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">SEASON</div>
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">{currentData?.season}</div>
               </div>
-              <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
+              <div className="bg-linear-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
                 <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">LAST UPDATE</div>
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">LIVE</div>
               </div>
-              <div className="bg-gradient-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
+              <div className="bg-linear-to-br from-gray-800/30 to-black/30 p-3 sm:p-4 lg:p-6 rounded-xl sm:rounded-2xl border border-gray-700/30">
                 <div className="text-xs sm:text-sm text-gray-400 mb-1 sm:mb-2">CHAMPIONSHIP</div>
                 <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">F1</div>
               </div>
@@ -1248,11 +1310,11 @@ const F1ChampionshipStandings = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-800/50 shadow-xl sm:shadow-2xl"
+              className="bg-linear-to-br from-gray-900/50 to-black/50 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-gray-800/50 shadow-xl sm:shadow-2xl"
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 lg:mb-10 gap-4">
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-red-600 to-red-800 flex items-center justify-center">
                     <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
@@ -1266,10 +1328,12 @@ const F1ChampionshipStandings = () => {
 
               <div className="space-y-3 sm:space-y-4">
                 {standingsData?.map((item, index) => (
-                  activeTab === 'drivers' ? (
-                    <DriverCard key={item.classificationId} driver={item} index={index} />
-                  ) : null
-                ))}
+  activeTab === 'drivers' ? (
+    <DriverCard key={item.classificationId} driver={item} index={index} />
+  ) : (
+    <ConstructorCard key={item.teamId} constructor={item} index={index} />
+  )
+))}
               </div>
             </motion.div>
           </div>
@@ -1279,8 +1343,8 @@ const F1ChampionshipStandings = () => {
             {selectedItem ? (
               <DetailPanel />
             ) : (
-              <div className="sticky top-6 h-fit rounded-3xl border-2 border-dashed border-gray-800/50 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-xl p-8 text-center">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-800/30 to-black/30 rounded-full flex items-center justify-center border border-gray-700/50">
+              <div className="sticky top-6 h-fit rounded-3xl border-2 border-dashed border-gray-800/50 bg-linear-to-br from-gray-900/50 to-black/50 backdrop-blur-xl p-8 text-center">
+                <div className="w-24 h-24 mx-auto mb-6 bg-linear-to-br from-gray-800/30 to-black/30 rounded-full flex items-center justify-center border border-gray-700/50">
                   <Target className="w-12 h-12 text-gray-600" />
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">SELECT FOR DETAILS</h3>
@@ -1288,7 +1352,7 @@ const F1ChampionshipStandings = () => {
                   Click on any {activeTab === 'drivers' ? 'driver' : 'constructor'}
                 </p>
                 <p className="text-xs text-gray-600">to view detailed information here</p>
-                <div className="w-12 h-1 bg-gradient-to-r from-red-600 to-red-800 mx-auto rounded-full mt-4 shadow-lg shadow-red-600/30" />
+                <div className="w-12 h-1 bg-linear-to-r from-red-600 to-red-800 mx-auto rounded-full mt-4 shadow-lg shadow-red-600/30" />
               </div>
             )}
           </div>
