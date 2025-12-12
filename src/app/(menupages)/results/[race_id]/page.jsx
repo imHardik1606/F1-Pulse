@@ -132,7 +132,7 @@ export default function RaceResults() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4 md:p-8">
+      <div className="min-h-screen bg-linear-to-br from-gray-900 to-black p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="h-12 bg-gray-800 rounded-lg animate-pulse w-1/4 mb-4"></div>
@@ -149,7 +149,7 @@ export default function RaceResults() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="min-h-screen bg-gradient-to-br from-gray-900 to-black p-4 md:p-8"
+        className="min-h-screen bg-linear-to-br from-gray-900 to-black p-4 md:p-8"
       >
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-900/20 border border-red-800/50 rounded-xl p-8 text-center backdrop-blur-sm">
@@ -158,7 +158,7 @@ export default function RaceResults() {
             <p className="text-red-300 mb-6">{error}</p>
             <button 
               onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all transform hover:scale-105 active:scale-95"
+              className="px-6 py-3 bg-linear-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all transform hover:scale-105 active:scale-95"
             >
               Try Again
             </button>
@@ -173,7 +173,7 @@ export default function RaceResults() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white p-4 md:p-8"
+      className="min-h-screen bg-linear-to-br from-gray-900 via-gray-900 to-black text-white p-4 md:p-8"
     >
       <div className="max-w-7xl mx-auto">
         {/* Race Header */}
@@ -186,21 +186,21 @@ export default function RaceResults() {
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <span className="px-4 py-1.5 bg-gradient-to-r from-red-600 to-orange-600 rounded-full text-sm font-bold">
+                <span className="px-4 py-1.5 bg-linear-to-r from-red-600 to-orange-600 rounded-full text-sm font-bold">
                   Round {raceData.round}
                 </span>
                 {raceData.winner && (
-                  <span className="px-4 py-1.5 bg-gradient-to-r from-emerald-600 to-green-600 rounded-full text-sm font-bold">
+                  <span className="px-4 py-1.5 bg-linear-to-r from-emerald-600 to-green-600 rounded-full text-sm font-bold">
                     Completed
                   </span>
                 )}
                 {!raceData.winner && (
-                  <span className="px-4 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full text-sm font-bold">
+                  <span className="px-4 py-1.5 bg-linear-to-r from-blue-600 to-cyan-600 rounded-full text-sm font-bold">
                     Upcoming
                   </span>
                 )}
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-3">
+              <h1 className="text-4xl md:text-5xl font-bold bg-linear-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent mb-3">
                 {raceData.raceName}
               </h1>
               <div className="flex items-center gap-3 text-gray-300">
@@ -214,7 +214,7 @@ export default function RaceResults() {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-yellow-900/20 to-amber-900/10 border border-yellow-800/30 rounded-2xl p-6 backdrop-blur-sm"
+                className="bg-linear-to-br from-yellow-900/20 to-amber-900/10 border border-yellow-800/30 rounded-2xl p-6 backdrop-blur-sm"
               >
                 <h3 className="text-lg font-semibold text-yellow-300 mb-3">Race Winner</h3>
                 <div className="flex items-center gap-4">
@@ -305,7 +305,7 @@ export default function RaceResults() {
                   href={raceData.circuit.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-105 active:scale-95"
+                  className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-600 to-cyan-600 rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-105 active:scale-95"
                 >
                   <span>More Circuit Info</span>
                   <span>↗</span>
@@ -329,7 +329,7 @@ export default function RaceResults() {
                       whileHover={{ scale: 1.02 }}
                       className={`p-4 rounded-xl border ${
                         session === 'race' 
-                          ? 'bg-gradient-to-br from-red-900/20 to-red-800/10 border-red-800/30' 
+                          ? 'bg-linear-to-br from-red-900/20 to-red-800/10 border-red-800/30' 
                           : 'bg-gray-900/30 border-gray-700/50'
                       }`}
                     >
@@ -369,7 +369,7 @@ export default function RaceResults() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="bg-gradient-to-br from-purple-900/20 to-violet-900/10 border border-purple-800/30 rounded-2xl p-6 backdrop-blur-sm"
+                  className="bg-linear-to-br from-purple-900/20 to-violet-900/10 border border-purple-800/30 rounded-2xl p-6 backdrop-blur-sm"
                 >
                   <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                     <span className="text-purple-400">⚡</span>
@@ -399,7 +399,7 @@ export default function RaceResults() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="bg-gradient-to-br from-cyan-900/20 to-blue-900/10 border border-cyan-800/30 rounded-2xl p-6 backdrop-blur-sm"
+                className="bg-linear-to-br from-cyan-900/20 to-blue-900/10 border border-cyan-800/30 rounded-2xl p-6 backdrop-blur-sm"
               >
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   <span className="text-cyan-400">🏆</span>
@@ -434,7 +434,7 @@ export default function RaceResults() {
           >
             {/* Winner Card */}
             {raceData.winner ? (
-              <div className="bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm">
+              <div className="bg-linear-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm">
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
                   <span className="text-yellow-500">🥇</span>
                   Race Winner
@@ -442,7 +442,7 @@ export default function RaceResults() {
                 
                 <div className="space-y-6">
                   {/* Driver Info */}
-                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-900/20 to-amber-900/10 rounded-xl">
+                  <div className="flex items-center gap-4 p-4 bg-linear-to-r from-yellow-900/20 to-amber-900/10 rounded-xl">
                     <div className="text-5xl">👤</div>
                     <div>
                       <div className="text-2xl font-bold">
@@ -456,7 +456,7 @@ export default function RaceResults() {
                   </div>
 
                   {/* Team Info */}
-                  <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl">
+                  <div className="p-4 bg-linear-to-r from-gray-800 to-gray-900 border border-gray-700/50 rounded-xl">
                     <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
                       <span className="text-red-500">🏎️</span>
                       Winning Team
@@ -509,7 +509,7 @@ export default function RaceResults() {
                       href={raceData.winner.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full py-3 bg-gradient-to-r from-yellow-600 to-amber-600 text-center rounded-lg hover:from-yellow-700 hover:to-amber-700 transition-all transform hover:scale-105 active:scale-95"
+                      className="block w-full py-3 bg-linear-to-r from-yellow-600 to-amber-600 text-center rounded-lg hover:from-yellow-700 hover:to-amber-700 transition-all transform hover:scale-105 active:scale-95"
                     >
                       Driver Biography
                     </a>
@@ -517,7 +517,7 @@ export default function RaceResults() {
                 </div>
               </div>
             ) : (
-              <div className="bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-8 text-center backdrop-blur-sm">
+              <div className="bg-linear-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-8 text-center backdrop-blur-sm">
                 <div className="text-6xl mb-4">⏳</div>
                 <h3 className="text-xl font-bold text-gray-200 mb-2">Race Not Started</h3>
                 <p className="text-gray-400">Winner information will be available after the race.</p>
@@ -534,7 +534,7 @@ export default function RaceResults() {
             )}
 
             {/* Race Statistics */}
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm">
+            <div className="bg-linear-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-green-500">📊</span>
                 Race Statistics
@@ -560,7 +560,7 @@ export default function RaceResults() {
             </div>
 
             {/* External Links */}
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm">
+            <div className="bg-linear-to-b from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl p-6 backdrop-blur-sm">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <span className="text-blue-500">🔗</span>
                 More Information
@@ -622,7 +622,7 @@ export default function RaceResults() {
         >
           <button 
             onClick={() => window.history.back()}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-700/50 rounded-lg transition-all transform hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 border border-gray-700/50 rounded-lg transition-all transform hover:scale-105 active:scale-95"
           >
             <span>←</span>
             <span>Back to Races</span>

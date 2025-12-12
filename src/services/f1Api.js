@@ -242,7 +242,7 @@ export const f1Api = {
       const data = await response.json();
       return data.championships || [];
     } catch (error) {
-      console.error('Error fetching seasons:', error);
+      console.error("Error fetching seasons:", error);
       throw error;
     }
   },
@@ -250,13 +250,17 @@ export const f1Api = {
   // Fetch driver championship for a specific year
   async getDriverChampionshipByYear(year) {
     try {
-      const response = await fetch(`${API_BASE_URL}/${year}/drivers-championship`);
+      const response = await fetch(
+        `${API_BASE_URL}/${year}/drivers-championship`
+      );
       if (!response.ok) {
         // Some years might not have data, return empty array
         if (response.status === 404) {
           return { drivers_championship: [] };
         }
-        throw new Error(`Failed to fetch driver championship: ${response.status}`);
+        throw new Error(
+          `Failed to fetch driver championship: ${response.status}`
+        );
       }
       return await response.json();
     } catch (error) {
@@ -269,17 +273,24 @@ export const f1Api = {
   // Fetch constructor championship for a specific year
   async getConstructorChampionshipByYear(year) {
     try {
-      const response = await fetch(`${API_BASE_URL}/${year}/constructors-championship`);
+      const response = await fetch(
+        `${API_BASE_URL}/${year}/constructors-championship`
+      );
       if (!response.ok) {
         // Some years might not have data, return empty array
         if (response.status === 404) {
           return { constructor_championship: [] };
         }
-        throw new Error(`Failed to fetch constructor championship: ${response.status}`);
+        throw new Error(
+          `Failed to fetch constructor championship: ${response.status}`
+        );
       }
       return await response.json();
     } catch (error) {
-      console.error(`Error fetching constructor championship for ${year}:`, error);
+      console.error(
+        `Error fetching constructor championship for ${year}:`,
+        error
+      );
       // Return empty structure instead of throwing
       return { constructor_championship: [] };
     }
@@ -294,8 +305,62 @@ export const f1Api = {
       const data = await response.json();
       return data || [];
     } catch (error) {
-      console.error('Error fetching seasons:', error);
+      console.error("Error fetching seasons:", error);
       throw error;
     }
-  },  
+  },
+
+  async fetchTeams() {
+    try {
+      const teamsResponse = await fetch("https://f1api.dev/api/current/teams");
+
+      if (!teamsResponse.ok) {
+        throw new Error(`HTTP error! Status: ${teamsResponse.status}`);
+      }
+
+      const teamsData = await teamsResponse.json();
+      const allTeams = teamsData.teams || [];
+
+      return allTeams;
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      return [];
+    }
+  },
+
+  async fetchTeamDrivers(teamId) {
+    try {
+      const driversResponse = await fetch(
+        `${API_BASE_URL}/current/teams/${teamId}/drivers`
+      );
+
+      if (!driversResponse.ok) {
+        throw new Error(`HTTP error! Status: ${driversResponse.status}`);
+      }
+      const driversData = await driversResponse.json();
+
+      return driversData || [];
+    } catch (error) {
+      console.error("Error in fetching team drivers");
+      return [];
+    }
+  },
+
+  async getResults(currentYear,round, session) {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/${currentYear}/${round}/${session}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const resultsData = await response.json();
+
+      return resultsData;
+    } catch (error) {
+      console.error("Error in fetching race results");
+      return null;
+    }
+  },
 };
