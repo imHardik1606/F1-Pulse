@@ -650,14 +650,6 @@ export default function ResultComponent() {
                             : "N/A"}
                         </div>
                       </div>
-
-                      {/* Total Results (if applicable) */}
-                      <div>
-                        <div className="text-sm text-gray-400">
-                          Total Results
-                        </div>
-                        <div className="font-medium">{data.total}</div>
-                      </div>
                     </div>
                   </div>
                 </div>
