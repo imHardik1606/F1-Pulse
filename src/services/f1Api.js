@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://f1api.dev/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const f1Api = {
   // Get driver championship standings
