@@ -1114,104 +1114,61 @@ export default function LandingPage() {
           </div>
 
             {/* Championship Standings */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.6 }}
-              className="bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-6 md:p-8 shadow-2xl"
-            >
-              <div
-                className={`${orbitron.className} flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8`}
-              >
-                <motion.div
-                  variants={fadeInUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  <h3 className="text-2xl md:text-3xl font-semibold text-white">
-                    Current Leaderboard
-                  </h3>
-                  <p className="text-gray-400">
-                    {currentYear} Championship Standings
-                  </p>
-                </motion.div>
+           <div className="bg-gray-900/30 backdrop-blur-xl border border-gray-800/30 rounded-2xl p-6 md:p-8 shadow-2xl">
+  <div
+    className={`${orbitron.className} flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8`}
+  >
+    <div>
+      <h3 className="text-2xl md:text-3xl font-semibold text-white">
+        Current Leaderboard
+      </h3>
+      <p className="text-gray-400">
+        {currentYear} Championship Standings
+      </p>
+    </div>
 
-                {/* Animated Championship Toggle */}
-                <div className="relative mt-4 sm:mt-0">
-                  <div className="flex items-center bg-gray-800/50 backdrop-blur-sm rounded-lg p-1 border border-gray-700/50">
-                    <div className="relative flex gap-2">
-                      {" "}
-                      {/* Removed w-64 */}
-                      <motion.div
-                        className="absolute top-1 bottom-1 w-1/2 bg-primary/30 rounded-md border border-red-500/50"
-                        animate={
-                          activeStanding === "drivers"
-                            ? { x: 0 }
-                            : { x: "100%" }
-                        }
-                        transition={{
-                          type: "spring",
-                          stiffness: 200,
-                          damping: 20,
-                        }}
-                      />
-                      <button
-                        onClick={() => setActiveStanding("drivers")}
-                        className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
-                        disabled={loading.drivers}
-                      >
-                        <Users className="w-6 h-6 shrink-0" />
-                        <span className="font-medium truncate">Drivers</span>
-                      </button>
-                      <button
-                        onClick={() => setActiveStanding("constructors")}
-                        className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
-                        disabled={loading.constructors}
-                      >
-                        <Award className="w-6 h-6 shrink-0 mr-2" />
-                        <span className="font-medium">Constructors</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+    {/* Championship Toggle */}
+    <div className="relative mt-4 sm:mt-0">
+      <div className="flex items-center bg-gray-800/50 backdrop-blur-sm rounded-lg p-1 border border-gray-700/50">
+        <div className="relative flex gap-2">
+          <div className="absolute top-1 bottom-1 w-1/2 bg-primary/30 rounded-md border border-red-500/50" />
+          <button
+            onClick={() => setActiveStanding("drivers")}
+            className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
+            disabled={loading.drivers}
+          >
+            <Users className="w-6 h-6 shrink-0" />
+            <span className="font-medium truncate">Drivers</span>
+          </button>
+          <button
+            onClick={() => setActiveStanding("constructors")}
+            className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
+            disabled={loading.constructors}
+          >
+            <Award className="w-6 h-6 shrink-0 mr-2" />
+            <span className="font-medium">Constructors</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStanding}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {renderStandings()}
-                </motion.div>
-              </AnimatePresence>
+  <div>
+    {renderStandings()}
+  </div>
 
-              <motion.div
-                className="mt-6 md:mt-8 text-center"
-                whileHover={{ scale: 1.05 }}
-              >
-                <Link
-                  href="/standings"
-                  className="text-red-500 hover:text-red-400 font-semibold flex items-center justify-center mx-auto space-x-2 px-6 py-3 rounded-lg hover:bg-primary/10 transition-all duration-300 border border-red-500/30 w-full max-w-[200px]"
-                >
-                  <span>View all Standings</span>
-                  <motion.span
-                    animate={{ rotate: [0, 360] }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  >
-                    <CircuitBoard className="w-4 h-4" />
-                  </motion.span>
-                </Link>
-              </motion.div>
-            </motion.div>
+  <div className="mt-6 md:mt-8 text-center">
+    <Link
+      href="/standings"
+      className="text-red-500 hover:text-red-400 font-semibold flex items-center justify-center mx-auto space-x-2 px-6 py-3 rounded-lg hover:bg-primary/10 transition-all duration-300 border border-red-500/30 w-full max-w-[200px]"
+    >
+      <span>View all Standings</span>
+      <span>
+        <CircuitBoard className="w-4 h-4" />
+      </span>
+    </Link>
+  </div>
+</div>
 
             {/* Animated Circuit Line */}
             <motion.div
