@@ -1129,28 +1129,35 @@ export default function LandingPage() {
 
     {/* Championship Toggle */}
     <div className="relative mt-4 sm:mt-0">
-      <div className="flex items-center bg-gray-800/50 backdrop-blur-sm rounded-lg p-1 border border-gray-700/50">
-        <div className="relative flex gap-2">
-          <div className="absolute top-1 bottom-1 w-1/2 bg-primary/30 rounded-md border border-red-500/50" />
-          <button
-            onClick={() => setActiveStanding("drivers")}
-            className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
-            disabled={loading.drivers}
-          >
-            <Users className="w-6 h-6 shrink-0" />
-            <span className="font-medium truncate">Drivers</span>
-          </button>
-          <button
-            onClick={() => setActiveStanding("constructors")}
-            className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
-            disabled={loading.constructors}
-          >
-            <Award className="w-6 h-6 shrink-0 mr-2" />
-            <span className="font-medium">Constructors</span>
-          </button>
-        </div>
-      </div>
+  <div className="flex items-center bg-gray-800/50 backdrop-blur-sm rounded-lg p-1 border border-gray-700/50">
+    <div className="relative flex gap-2">
+      {/* Slider that moves based on activeStanding */}
+      <div 
+        className={`absolute top-1 bottom-1 w-1/2 bg-primary/30 rounded-md border border-red-500/50 transition-all duration-300 ease-in-out ${
+          activeStanding === "drivers" ? "left-1" : "left-[calc(50%+4px)]"
+        }`}
+      />
+      
+      <button
+        onClick={() => setActiveStanding("drivers")}
+        className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
+        disabled={loading.drivers}
+      >
+        <Users className="w-6 h-6 shrink-0" />
+        <span className="font-medium truncate">Drivers</span>
+      </button>
+      
+      <button
+        onClick={() => setActiveStanding("constructors")}
+        className="relative flex-1 flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition-colors z-10 cursor-pointer min-w-0 overflow-hidden"
+        disabled={loading.constructors}
+      >
+        <Award className="w-6 h-6 shrink-0 mr-2" />
+        <span className="font-medium">Constructors</span>
+      </button>
     </div>
+  </div>
+</div>
   </div>
 
   <div>
